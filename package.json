@@ -7,6 +7,7 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "deploy": "gh-pages -d dist",
     "astro": "astro"
   },
   "dependencies": {
@@ -15,6 +16,7 @@
     "@types/react": "^18.3.9",
     "@types/react-dom": "^18.3.0",
     "astro": "^4.15.9",
+    "lansat": "file:",
     "lucide-react": "^0.446.0",
     "next": "^14.2.13",
     "react": "^18.3.1",
