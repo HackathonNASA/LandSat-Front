@@ -1,327 +1,62 @@
-import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+"use client"
 
-// Example imports in web.jsx
-import { Button } from "../components/button";
-import { Input } from "../components/input";
-import { Label } from "../components/label";
-import { RadioGroup, RadioGroupItem } from "../components/radio-group";
-import { Switch } from "../components/switch";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "../components/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/tabs";
-import { Separator } from "../components/separator";
+import { useRef } from "react"
+import { Canvas, useFrame, useLoader } from "@react-three/fiber"
+import { Stars, OrbitControls } from "@react-three/drei"
+import * as THREE from "three"
 
-import StarsCanvas from "../components/Stars";
-import {
-  MapPin,
-  Crosshair,
-  Mail,
-  Satellite,
-  ExternalLink,
-  User,
-  AlertTriangle,
-} from "lucide-react";
-import Link from "next/link";
+function Earth() {
+  const earthRef = useRef < THREE.Mesh > (null)
+  const texture = useLoader(THREE.TextureLoader, "/assets/3d/texture_earth.jpg")
 
-export default function LandsatTracker() {
-  const canvasRef = useRef(null);
-  const [scrollY, setScrollY] = useState(0);
-  const [locationType, setLocationType] = useState("coordinates");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [notificationMethod, setNotificationMethod] = useState("browser");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvasRef.current,
-      alpha: true,
-    });
-    renderer.setSize(300, 300);
-
-    const geometry = new THREE.SphereGeometry(1, 32, 32);
-    const texture = new THREE.TextureLoader().load("/earth-texture.jpg");
-    const material = new THREE.MeshBasicMaterial({ map: texture });
-    const earth = new THREE.Mesh(geometry, material);
-    scene.add(earth);
-
-    camera.position.z = 3;
-
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.25;
-    controls.enableZoom = false;
-
-    const animate = () => {
-      requestAnimationFrame(animate);
-      earth.rotation.y += 0.005;
-      controls.update();
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    return () => {
-      controls.dispose();
-    };
-  }, []);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Tracking set up for:", {
-      locationType,
-      latitude,
-      longitude,
-      notificationMethod,
-    });
-  };
-
-  const handleGeolocation = () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude.toString());
-          setLongitude(position.coords.longitude.toString());
-        },
-        (error) => {
-          console.error("Error getting geolocation:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
+  useFrame(({ clock }) => {
+    if (earthRef.current) {
+      earthRef.current.rotation.y = clock.getElapsedTime() * 0.1
     }
-  };
-
-  const handleRegistration = (e) => {
-    e.preventDefault();
-    console.log("User registered:", { email, password });
-  };
+  })
 
   return (
-    <div className="min-h-screen bg-[#020817] text-white overflow-hidden">
-      {/* Animated stars */}
-      <StarsCanvas />
+    <mesh ref={earthRef}>
+      <sphereGeometry args={[1, 32, 32]} />
+      <meshStandardMaterial map={texture} />
+    </mesh>
+  )
+}
 
-      {/* Navigation */}
-      <nav className="flex justify-between items-center p-4 bg-opacity-50 bg-black">
-        <div className="text-2xl font-bold">LANDSAT TRACKER</div>
-        <div className="flex space-x-4">
-          {["HOME", "ABOUT", "TRACK", "NEWS", "CONTACT"].map((item) => (
-            <Link key={item} href="#" className="hover:text-gray-300">
-              {item}
-            </Link>
-          ))}
-        </div>
-      </nav>
+function MovingStars() {
+  const starsRef = useRef < THREE.Points > (null)
 
-      {/* Hero Section */}
-      <section className="flex justify-between items-center p-12">
-        <div className="max-w-2xl">
-          <h1 className="text-6xl font-bold mb-4">LANDSAT MISSION</h1>
-          <h2 className="text-2xl mb-4">OBSERVING EARTH FROM SPACE</h2>
-          <p className="mb-8">
-            Track Landsat satellites and receive notifications when they pass
-            over your location. Explore the beauty of Earth from a new
-            perspective.
-          </p>
-          <div className="space-x-4">
-            <Button variant="secondary">START TRACKING</Button>
-            <Button variant="outline">LEARN MORE</Button>
-          </div>
-        </div>
-        <div className="relative">
-          <img
-            src="/landsat-satellite.png"
-            alt="Landsat Satellite"
-            className="w-96 h-96 object-cover"
-          />
-          <canvas
-            ref={canvasRef}
-            className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2"
-          />
-        </div>
-      </section>
+  useFrame(({ clock }) => {
+    if (starsRef.current) {
+      starsRef.current.rotation.y = clock.getElapsedTime() * 0.05
+      starsRef.current.rotation.x = clock.getElapsedTime() * 0.025
+    }
+  })
 
-      <Tabs defaultValue="about" className="max-w-4xl mx-auto">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="about">About</TabsTrigger>
-          <TabsTrigger value="track">Track</TabsTrigger>
-          <TabsTrigger value="news">News</TabsTrigger>
-          <TabsTrigger value="links">Links</TabsTrigger>
-          <TabsTrigger value="register">Register</TabsTrigger>
-        </TabsList>
+  return (
+    <Stars
+      ref={starsRef}
+      radius={100}
+      depth={50}
+      count={5000}
+      factor={4}
+      saturation={0}
+      fade
+      speed={1}
+    />
+  )
+}
 
-        {/* Tabs content: About */}
-        <TabsContent value="about">
-          <Card>
-            <CardHeader>
-              <CardTitle>About Landsat</CardTitle>
-              <CardDescription>
-                Earth observation satellite program
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-4">
-                Landsat is a series of Earth observation satellites...
-              </p>
-              <h3 className="text-lg font-semibold mb-2">Key Features:</h3>
-              <ul className="list-disc list-inside space-y-1">
-                <li>Continuous global record of Earth's surface</li>
-                <li>Medium resolution multispectral data</li>
-                <li>Free and open data policy</li>
-                <li>
-                  Supports various applications in agriculture, geology,
-                  forestry, and more
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Tabs content: Track */}
-        <TabsContent value="track">
-          <Card>
-            <CardHeader>
-              <CardTitle>Track Landsat</CardTitle>
-              <CardDescription>
-                Set up notifications for Landsat passes over your location
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <Label>Define Target Location</Label>
-                  <RadioGroup
-                    value={locationType}
-                    onValueChange={setLocationType}
-                    className="flex space-x-4 mt-2"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="coordinates" id="coordinates" />
-                      <Label htmlFor="coordinates">Coordinates</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="map" id="map" />
-                      <Label htmlFor="map">Interactive Map</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="geolocation" id="geolocation" />
-                      <Label htmlFor="geolocation">Use My Location</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                {locationType === "coordinates" && (
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="latitude">Latitude</Label>
-                      <Input
-                        id="latitude"
-                        type="text"
-                        value={latitude}
-                        onChange={(e) => setLatitude(e.target.value)}
-                        placeholder="e.g., 40.7128"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="longitude">Longitude</Label>
-                      <Input
-                        id="longitude"
-                        type="text"
-                        value={longitude}
-                        onChange={(e) => setLongitude(e.target.value)}
-                        placeholder="e.g., -74.0060"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {locationType === "geolocation" && (
-                  <Button type="button" onClick={handleGeolocation}>
-                    Get Current Location
-                  </Button>
-                )}
-
-                <Separator />
-
-                <div>
-                  <Label>Notification Method</Label>
-                  <RadioGroup
-                    value={notificationMethod}
-                    onValueChange={setNotificationMethod}
-                    className="flex space-x-4 mt-2"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="browser" id="browser" />
-                      <Label htmlFor="browser">Browser</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="email" id="email" />
-                      <Label htmlFor="email">Email</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              </form>
-            </CardContent>
-            <CardFooter>
-              <Button onClick={handleSubmit}>Start Tracking</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-
-        {/* Tabs content: Register */}
-        <TabsContent value="register">
-          <Card>
-            <CardHeader>
-              <CardTitle>Register</CardTitle>
-              <CardDescription>Sign up to receive updates</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleRegistration} className="space-y-4">
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                  />
-                </div>
-                <Button type="submit">Register</Button>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+export default function LandsatTracker() {
+  return (
+    <div className="w-full h-screen bg-black">
+      <Canvas camera={{ position: [0, 0, 4] }}>
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} />
+        <MovingStars />
+        <Earth />
+        <OrbitControls enableZoom={false} />
+      </Canvas>
     </div>
-  );
+  )
 }
