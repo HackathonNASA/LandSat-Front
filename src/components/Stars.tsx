@@ -1,44 +1,70 @@
-import { useRef, Suspense } from "react";
+import { useRef, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Points, PointMaterial, Preload } from "@react-three/drei";
-import * as random from "maath/random/dist/maath-random.esm";
-import * as THREE from "three"; // Importa los tipos de Three.js
+import * as THREE from "three";
 
-const Stars = (props) => {
-    const ref = useRef<THREE.Points>(); // Añade el tipo de THREE.Points
+// Componente para crear el grupo de estrellas
+const Stars = () => {
+    const ref = useRef<THREE.Points>();
 
-    const sphere = random.inSphere(new Float32Array(5000), { radius: 1.2 });
+    // Crear geometría de puntos y material
+    useEffect(() => {
+        const starsGeometry = new THREE.BufferGeometry();
+        const starCount = 5000; // Número de estrellas
+        const positions = new Float32Array(starCount * 3); // Posiciones x, y, z
+        const sizes = new Float32Array(starCount); // Tamaños de las estrellas
 
+        // Rellenar posiciones y tamaños de las estrellas
+        for (let i = 0; i < starCount; i++) {
+            // Generar coordenadas esféricas
+            const radius = 1.2 + Math.random() * 0.5; // Radio aleatorio
+            const phi = Math.acos(2 * Math.random() - 1); // Ángulo phi
+            const theta = Math.random() * 2 * Math.PI; // Ángulo theta
+
+            // Convertir de coordenadas esféricas a cartesianas
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta);
+            const z = radius * Math.cos(phi);
+
+            // Asignar posición
+            positions.set([x, y, z], i * 3);
+            sizes[i] = Math.random() * 0.005 + 0.002; // Tamaños aleatorios
+        }
+
+        starsGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        starsGeometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+
+        if (ref.current) {
+            ref.current.geometry = starsGeometry;
+        }
+    }, []);
+
+    // Animar la rotación de las estrellas
     useFrame((state, delta) => {
-        if (ref.current) {  // Verifica si ref.current existe
+        if (ref.current) {
             ref.current.rotation.x -= delta / 10;
             ref.current.rotation.y -= delta / 15;
         }
     });
 
     return (
-        <group rotation={[0, 0, Math.PI / 4]}>
-            <Points ref={ref} positions={sphere} stride={3} frustumCulled {...props}>
-                <PointMaterial
-                    transparent
-                    color="#f272c8"
-                    size={0.002}
-                    sizeAttenuation={true}
-                    depthWrite={false}
-                />
-            </Points>
-        </group>
+        <points ref={ref}>
+            <pointsMaterial
+                size={0.002} // Tamaño base de las estrellas
+                sizeAttenuation
+                color="#ffffff" // Color blanco para las estrellas
+                transparent
+                depthWrite={false}
+            />
+        </points>
     );
 };
 
+// Lienzo principal para mostrar las estrellas
 const StarsCanvas = () => {
     return (
         <div className="w-full h-auto absolute inset-0 z-[-1]">
             <Canvas camera={{ position: [0, 0, 1] }}>
-                <Suspense fallback={null}>
-                    <Stars />
-                </Suspense>
-                <Preload all />
+                <Stars />
             </Canvas>
         </div>
     );
