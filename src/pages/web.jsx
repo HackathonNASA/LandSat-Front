@@ -19,6 +19,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/tabs";
 import { Separator } from "../components/separator";
 
+import StarsCanvas from "../components/Stars";
 import {
   MapPin,
   Crosshair,
@@ -117,23 +118,7 @@ export default function LandsatTracker() {
   return (
     <div className="min-h-screen bg-[#020817] text-white overflow-hidden">
       {/* Animated stars */}
-      <div className="fixed inset-0 pointer-events-none">
-        {[...Array(100)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-white"
-            style={{
-              width: Math.random() * 2 + 1 + "px",
-              height: Math.random() * 2 + 1 + "px",
-              top: Math.random() * 100 + "%",
-              left: Math.random() * 100 + "%",
-              opacity: Math.random(),
-              transform: `translateY(${scrollY * 0.5}px)`,
-              transition: "transform 0.3s ease-out",
-            }}
-          />
-        ))}
-      </div>
+      <StarsCanvas />
 
       {/* Navigation */}
       <nav className="flex justify-between items-center p-4 bg-opacity-50 bg-black">
