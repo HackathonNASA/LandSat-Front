@@ -5,14 +5,16 @@ import LandsatInfo from "../components/LandsatInfo.astro";
 ---
 
 <Layout title="3D Earth Viewer">
-  <div class="flex flex-col md:flex-row w-full h-screen overflow-hidden">
-    <!-- Landsat Info section -->
-    <div class="w-full md:w-1/3 h-1/2 md:h-full p-4 flex items-center justify-center relative z-10">
+  <div
+    class="flex flex-col md:flex-row w-full h-screen overflow-hidden relative"
+  >
+    <div
+      class="w-full md:w-1/3 h-1/2 md:h-full p-4 flex items-center justify-center z-10"
+    >
       <LandsatInfo />
     </div>
-    <!-- 3D Earth Viewer -->
-    <div class="w-full md:w-2/3 h-1/2 md:h-full relative">
-      <Scene client:load />
+    <div class="w-full md:w-2/3 h-1/2 md:h-full">
+      <Scene client:only="react" />
     </div>
   </div>
 </Layout>
