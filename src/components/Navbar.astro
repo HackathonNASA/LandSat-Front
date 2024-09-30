@@ -6,7 +6,7 @@ const currentPath = Astro.url.pathname;
 ---
 
 <nav
-        class="bg-black text-white p-4 relative overflow-hidden"
+        class="bg-black text-white p-4 fixed w-full top-0 z-50"
 >
     <div class="nasa-background"></div>
     <div class="container mx-auto relative z-10">
@@ -21,126 +21,56 @@ const currentPath = Astro.url.pathname;
                 <span
                         class="text-3xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200"
                 >
-                    Landsat Explorer
+                    Landsat Tracker
                 </span>
             </div>
             <!-- Navigation Links -->
             <ul class="flex space-x-6 text-lg">
                 <li>
-                    <a
-                            href="/"
-                            class={`nav-link group ${currentPath === "/" ? "active" : ""}`}
-                    >
+                    <a href="#home" class="nav-link group">
                         <div class="flex flex-col items-center">
-                            <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6 mb-1"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                            >
-                                <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                                ></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                             </svg>
                             <span class="nav-text">Home</span>
                         </div>
                     </a>
                 </li>
                 <li>
-                    <a
-                            href="/about"
-                            class={`nav-link group ${currentPath === "/about" ? "active" : ""}`}
-                    >
+                    <a href="#about" class="nav-link group">
                         <div class="flex flex-col items-center">
-                            <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6 mb-1"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                            >
-                                <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                ></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             <span class="nav-text">About Landsat</span>
                         </div>
                     </a>
                 </li>
                 <li>
-                    <a
-                            href="/data"
-                            class={`nav-link group ${currentPath === "/data" ? "active" : ""}`}
-                    >
+                    <a href="#data" class="nav-link group">
                         <div class="flex flex-col items-center">
-                            <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6 mb-1"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                            >
-                                <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                                ></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                             </svg>
                             <span class="nav-text">Satellite Data</span>
                         </div>
                     </a>
                 </li>
                 <li>
-                    <a
-                            href="/gallery"
-                            class={`nav-link group ${currentPath === "/gallery" ? "active" : ""}`}
-                    >
+                    <a href="#gallery" class="nav-link group">
                         <div class="flex flex-col items-center">
-                            <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6 mb-1"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                            >
-                                <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                ></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
                             <span class="nav-text">Image Gallery</span>
                         </div>
                     </a>
                 </li>
                 <li>
-                    <a
-                            href="/contact"
-                            class={`nav-link group ${currentPath === "/contact" ? "active" : ""}`}
-                    >
+                    <a href="#contact" class="nav-link group">
                         <div class="flex flex-col items-center">
-                            <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6 mb-1"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                            >
-                                <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                                ></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                             <span class="nav-text">Contact</span>
                         </div>
@@ -193,21 +123,19 @@ const currentPath = Astro.url.pathname;
 </style>
 
 <script>
-    // Update active link on page load and when navigating
-    function updateActiveLink() {
-        const currentPath = window.location.pathname;
-        document.querySelectorAll(".nav-link").forEach((link) => {
-            if (link.getAttribute("href") === currentPath) {
-                link.classList.add("active");
-            } else {
-                link.classList.remove("active");
+    // Smooth scrolling to sections
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 20,  // Adjust 60px for navbar height
+                    behavior: 'smooth'
+                });
             }
         });
-    }
-
-    // Run on page load
-    updateActiveLink();
-
-    // Run when navigating using browser back/forward buttons
-    window.addEventListener("popstate", updateActiveLink);
+    });
 </script>

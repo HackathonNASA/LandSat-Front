@@ -1,6 +1,4 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/Navbar.astro";
 import { Rocket, Globe, Camera, ChartLine } from "lucide-react";
 
 const landsatFacts = [
@@ -17,98 +15,36 @@ const landsatFacts = [
 ];
 ---
 
-<Layout title="About Landsat - Landsat Explorer">
-    <Navbar />
-    <main
-        class="relative min-h-screen bg-space bg-cover bg-center overflow-hidden py-16"
-    >
-        <div class="absolute inset-0 bg-black opacity-50"></div>
-        <div class="stars"></div>
-        <div class="twinkling"></div>
-        <div class="relative z-10 container mx-auto px-4">
-            <h1
-                class="text-5xl font-bold mb-8 text-white text-center tracking-wide"
-            >
-                About Landsat
-            </h1>
-            <div
-                class="backdrop-blur-md bg-opacity-20 bg-blue-900 p-8 rounded-lg shadow-2xl border border-blue-500 max-w-4xl mx-auto"
-            >
-                <p class="text-xl mb-8 text-blue-200">
-                    Landsat is NASA's longest-running program for acquisition of
-                    satellite imagery of Earth. For over five decades, it has
-                    been providing invaluable data for understanding our
-                    planet's ecosystems, land use patterns, and environmental
-                    changes.
-                </p>
-                <h2 class="text-3xl font-semibold mb-6 text-white">
-                    Key Facts
-                </h2>
-                <ul class="space-y-6">
-                    {
-                        landsatFacts.map((fact) => (
+<section id="about" class="relative min-h-screen bg-space bg-cover bg-center overflow-hidden py-16 pt-[80px]"> <!-- Adjust padding as needed -->
+    <div class="relative z-10 container mx-auto px-4">
+        <h1 class="text-5xl font-bold mb-8 text-white text-center tracking-wide">
+            About Landsat
+        </h1>
+        <div class="backdrop-blur-md bg-opacity-20 bg-blue-900 p-8 rounded-lg shadow-2xl border border-blue-500 max-w-4xl mx-auto">
+            <p class="text-xl mb-8 text-blue-200">
+                Landsat is NASA's longest-running program for the acquisition of satellite imagery of Earth. Since its first launch in 1972, it has been providing invaluable data for understanding our planet's ecosystems, land use patterns, and environmental changes.
+            </p>
+            <h2 class="text-3xl font-semibold mb-6 text-white">
+                Key Facts
+            </h2>
+            <ul class="space-y-6">
+                {
+                    landsatFacts.map((fact) => (
                             <li class="flex items-center space-x-4">
                                 <fact.icon className="w-8 h-8 text-blue-300 flex-shrink-0" />
-                                <span class="text-lg text-blue-100">
-                                    {fact.text}
-                                </span>
+                                <span class="text-lg text-blue-100">{fact.text}</span>
                             </li>
-                        ))
-                    }
-                </ul>
-                <div class="mt-12">
-                    <h2 class="text-3xl font-semibold mb-4 text-white">
-                        Impact
-                    </h2>
-                    <p class="text-lg text-blue-200">
-                        Landsat data has been instrumental in advancing our
-                        understanding of climate change, deforestation, water
-                        resource management, urban growth, and countless other
-                        areas of environmental science and land management.
-                    </p>
-                </div>
+                    ))
+                }
+            </ul>
+            <div class="mt-12">
+                <h2 class="text-3xl font-semibold mb-4 text-white">
+                    Impact
+                </h2>
+                <p class="text-lg text-blue-200">
+                    Landsat data has been instrumental in advancing our understanding of climate change, deforestation, water resource management, urban growth, and countless other areas of environmental science and land management. The long-term data archive enables scientists and researchers to track environmental changes over time, providing critical insights into how human activity and natural phenomena are shaping the planet.
+                </p>
             </div>
         </div>
-    </main>
-</Layout>
-
-<style>
-    .bg-space {
-        background-image: url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80");
-    }
-
-    .stars,
-    .twinkling {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    .stars {
-        background: transparent
-            url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png")
-            repeat top center;
-        z-index: 0;
-    }
-
-    .twinkling {
-        background: transparent
-            url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png")
-            repeat top center;
-        z-index: 1;
-        animation: move-twink-back 200s linear infinite;
-    }
-
-    @keyframes move-twink-back {
-        from {
-            background-position: 0 0;
-        }
-        to {
-            background-position: -10000px 5000px;
-        }
-    }
-</style>
+    </div>
+</section>
