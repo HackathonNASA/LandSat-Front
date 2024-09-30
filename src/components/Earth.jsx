@@ -6,7 +6,7 @@ import { Html } from '@react-three/drei';
 export default function Earth() {
     const earthRef = useRef(null);
     const texture = useLoader(THREE.TextureLoader, '/assets/3d/texture_earth.jpg');
-    const [scale, setScale] = useState(1);
+    const [scale, setScale] = useState(1.5);
     const [pins, setPins] = useState([]);
     const [isZoomed, setIsZoomed] = useState(false);
     const [isDragging, setIsDragging] = useState(false); // Detectar arrastre

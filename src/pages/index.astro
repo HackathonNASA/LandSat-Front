@@ -1,35 +1,47 @@
 ---
-// Importaciones
 import Layout from "../layouts/Layout.astro";
-import Scene from "../components/Scene.jsx";
-import LandsatInfo from "../components/LandsatInfo.astro";
-import Navbar from "../components/Navbar.astro";
+import Scene from "../components/Scene.jsx"; // Import the Scene component
+import Navbar from "../components/Navbar.astro"; // Import the Navbar
+import Home from "./home.astro"; // Section with LandsatInfo
+import About from "./about.astro"; // Import your About section
+import Data from "./data.astro"; // Import your Data section
+import Contact from "./contact.astro"; // Import your Contact section
+import Gallery from "./gallery.astro"; // Import your Gallery section
+
 ---
 
-<Layout title="3D Earth Viewer - Landsat Explorer">
+<Layout title="Landsat Tracker">
   <Navbar />
-  <main
-    class="relative flex flex-col h-screen bg-space bg-cover bg-center overflow-hidden"
-  >
-    <div class="absolute inset-0 bg-black opacity-50"></div>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
 
-    <div class="relative z-10 flex flex-col md:flex-row w-full h-full">
-      <div
-        class="w-full md:w-1/3 h-[calc(100vh-<altura-del-navbar>)] md:h-full p-8 flex items-center justify-center"
-      >
-        <div
-          class="backdrop-blur-md bg-opacity-20 bg-blue-900 p-6 rounded-lg shadow-2xl border border-blue-500"
-        >
-          <LandsatInfo />
-        </div>
-      </div>
-      <div
-        class="w-full md:w-2/3 h-[calc(100vh-<altura-del-navbar>)] md:h-full"
-      >
-        <Scene client:only="react" />
-      </div>
-    </div>
+  <!-- Full background Scene -->
+  <div class="fixed inset-0 z-0">
+    <Scene client:only="react" /> <!-- Full background Scene component -->
+  </div>
+
+  <main class="relative z-10 flex flex-col">
+    <!-- Home Section -->
+    <section id="home" class="relative py-16">
+      <Home /> <!-- This is your home section -->
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="relative py-16">
+      <About />
+    </section>
+
+    <!-- Data Section -->
+    <section id="data" class="relative py-16">
+      <Data />
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="relative py-16">
+      <Gallery />
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="relative py-16">
+      <Contact />
+    </section>
   </main>
 </Layout>
