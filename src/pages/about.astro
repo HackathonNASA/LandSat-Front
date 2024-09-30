@@ -1,0 +1,22 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+---
+
+<Layout title="About Landsat - Landsat Explorer">
+    <Navbar />
+    <main class="container mx-auto mt-8 p-4">
+        <h1 class="text-4xl font-bold mb-6">About Landsat</h1>
+        <p class="text-xl mb-4">
+            Landsat is NASA's longest-running program for acquisition of
+            satellite imagery of Earth.
+        </p>
+        <ul class="list-disc list-inside text-lg space-y-2">
+            <li>First launched in 1972</li>
+            <li>
+                Provides critical data about Earth's landscapes and coastlines
+            </li>
+            <li>Helps in monitoring environmental changes and land use</li>
+        </ul>
+    </main>
+</Layout>
