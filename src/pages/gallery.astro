@@ -1,20 +1,116 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
+
+const images = [
+    {
+        id: 1,
+        src: "https://images.unsplash.com/photo-1451187580459-43490279c0fa",
+        alt: "Earth from space",
+    },
+    {
+        id: 2,
+        src: "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4",
+        alt: "Satellite view of coastline",
+    },
+    {
+        id: 3,
+        src: "https://images.unsplash.com/photo-1604618542640-f9f6f3c76e1c",
+        alt: "Mountain range from space",
+    },
+    {
+        id: 4,
+        src: "https://images.unsplash.com/photo-1607499699372-7bb722dff7e2",
+        alt: "Desert landscape from satellite",
+    },
+    {
+        id: 5,
+        src: "https://images.unsplash.com/photo-1569974498991-d3c12a504f95",
+        alt: "City lights at night from space",
+    },
+    {
+        id: 6,
+        src: "https://images.unsplash.com/photo-1614728263952-84ea256f9679",
+        alt: "Glacier from satellite view",
+    },
+];
 ---
 
 <Layout title="Image Gallery - Landsat Explorer">
     <Navbar />
-    <main class="container mx-auto mt-8 p-4">
-        <h1 class="text-4xl font-bold mb-6">Image Gallery</h1>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {
-                [1, 2, 3, 4, 5, 6].map((i) => (
-                    <div class="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
-                        <span class="text-2xl text-gray-600">Image {i}</span>
-                    </div>
-                ))
-            }
+    <main
+        class="relative min-h-screen bg-space bg-cover bg-center overflow-hidden py-16"
+    >
+        <div class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+        <div class="relative z-10 container mx-auto px-4">
+            <h1
+                class="text-5xl font-bold mb-8 text-white text-center tracking-wide"
+            >
+                Image Gallery
+            </h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {
+                    images.map((image) => (
+                        <div
+                            key={image.id}
+                            class="group relative overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+                        >
+                            <img
+                                src={image.src}
+                                alt={image.alt}
+                                class="w-full h-64 object-cover"
+                            />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <p class="absolute bottom-4 left-4 text-white text-lg font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                {image.alt}
+                            </p>
+                        </div>
+                    ))
+                }
+            </div>
         </div>
     </main>
 </Layout>
+
+<style>
+    .bg-space {
+        background-image: url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80");
+    }
+
+    .stars,
+    .twinkling {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .stars {
+        background: transparent
+            url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png")
+            repeat top center;
+        z-index: 0;
+    }
+
+    .twinkling {
+        background: transparent
+            url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png")
+            repeat top center;
+        z-index: 1;
+        animation: move-twink-back 200s linear infinite;
+    }
+
+    @keyframes move-twink-back {
+        from {
+            background-position: 0 0;
+        }
+        to {
+            background-position: -10000px 5000px;
+        }
+    }
+</style>
