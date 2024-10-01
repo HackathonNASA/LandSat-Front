@@ -62,7 +62,6 @@ export default function Earth() {
         setIsZoomed(false);
     };
 
-    // Función para borrar todos los pines
     const handleClearPins = () => {
         setPins([]);
     };

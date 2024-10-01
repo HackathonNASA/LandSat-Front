@@ -1,5 +1,6 @@
 ---
 import { BarChart, FileText, Clock, Download } from "lucide-react";
+import LandsatTabs from '../components/LandsatTabs.jsx';
 
 // Data for categories
 const dataCategories = [
@@ -71,6 +72,8 @@ const dataCategories = [
     </div>
 </section>
 
+<LandsatTabs client:load />
+
 <style>
     .category-details.show {
         display: block;
@@ -89,33 +92,3 @@ const dataCategories = [
     }
 </style>
 
-<script>
-    function setupCategoryCards() {
-        const categoryCards = document.querySelectorAll(".category-card");
-        categoryCards.forEach((card) => {
-            card.addEventListener("click", () => {
-                const index = card.getAttribute("data-index");
-                const detailsElement =
-                    card.parentElement.querySelector(".category-details");
-
-                // Cierra los otros detalles
-                document
-                    .querySelectorAll(".category-details.show")
-                    .forEach((el) => {
-                        if (el !== detailsElement) {
-                            el.classList.remove("show");
-                        }
-                    });
-
-                // Alterna los detalles seleccionados
-                detailsElement.classList.toggle("show");
-            });
-        });
-    }
-
-    // Ejecuta el script al cargar la página
-    setupCategoryCards();
-
-    // Vuelve a ejecutar el script si el contenido de la página se actualiza
-    document.addEventListener("astro:page-load", setupCategoryCards);
-</script>
