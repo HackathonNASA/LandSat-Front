@@ -1,68 +1,130 @@
-import React, { useState, Suspense, useCallback } from 'react';
+import React, {useRef, useState, Suspense, useCallback,  } from 'react';
 import dynamic from 'next/dynamic';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-
-const Earth = dynamic(() => import('./Earth'), { ssr: false });
+import { Canvas, useLoader } from '@react-three/fiber';
+import { OrbitControls, Html } from '@react-three/drei';
+import * as THREE from 'three';
 
 export default function LandsatTabs() {
   const [activeTab, setActiveTab] = useState('track');
   const [locationType, setLocationType] = useState("coordinates");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+  const [inputLat, setInputLat] = useState('');
+  const [inputLng, setInputLng] = useState('');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pins, setPins] = useState([]);
+  const texture = useLoader(THREE.TextureLoader, '/assets/textures/earthmap1k.jpg');
+
+  const [scale, setScale] = useState(1.7);
+  const [isDragging, setIsDragging] = useState(false);
+  
+  
+    const handleEarthPointerDown = () => {
+        setIsDragging(false);
+    };
+
+    const handleEarthPointerMove = () => {
+        setIsDragging(true);
+    };
+
+    const handleEarthPointerUp = (event) => {
+        if (!isDragging && locationType === 'map') {
+            // Colocar pin solo si no hubo arrastre
+            const point = new THREE.Vector3().copy(event.point).normalize();
+            const phi = Math.acos(point.y);
+            const theta = Math.atan2(point.z, point.x);
+            const lat = 90 - (phi * 180) / Math.PI;
+            const lng = (theta * 180) / Math.PI;
+            const pinDistance = 1.02; // Un poco sobre la superficie
+            setPins((prevPins) => [
+                ...prevPins,
+                { lat, lng, position: point.clone().multiplyScalar(pinDistance) }
+            ]);
+        }
+    };
 
   const handleTrackSubmit = (e) => {
     e.preventDefault();
     if (locationType === 'coordinates') {
-      handleAddPin(parseFloat(latitude), parseFloat(longitude));
+        handleAddPin(); // Solo llama a handleAddPin() sin parámetros
     }
     console.log("Track form submitted");
-  };
-
+};
   const handleRegistration = (e) => {
     e.preventDefault();
     console.log("Registration form submitted");
   };
 
-  const handleAddPin = useCallback((lat, lng) => {
+  const handleAddPinGeo = (latitude, longitude) => {
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
+    if (isNaN(lat) || isNaN(lng)) {
+        alert('Por favor, ingresa coordenadas válidas');
+        return;
+    }
+
+    // Calcular la posición del pin
     const phi = (90 - lat) * (Math.PI / 180);
     const theta = lng * (Math.PI / 180);
     const x = Math.sin(phi) * Math.cos(theta);
     const y = Math.cos(phi);
     const z = Math.sin(phi) * Math.sin(theta);
-    const pinDistance = 1.02;
-    const newPin = { 
-      lat, 
-      lng, 
-      position: new THREE.Vector3(x, y, z).multiplyScalar(pinDistance) 
-    };
-    setPins(prevPins => [...prevPins, newPin]);
-    setLatitude("");
-    setLongitude("");
-  }, []);
+    const pinDistance = 1.02; // Un poco sobre la superficie
 
-  const handleGeolocation = () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          handleAddPin(latitude, longitude);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          alert("No se pudo obtener tu ubicación. Por favor, intenta de nuevo.");
-        }
-      );
-    } else {
-      alert("Tu navegador no soporta geolocalización.");
+    // Añadir el pin
+    setPins((prevPins) => [
+        ...prevPins,
+        { lat, lng, position: new THREE.Vector3(x, y, z).multiplyScalar(pinDistance) }
+    ]);
+};
+
+  const handleAddPin = () => {
+    const lat = parseFloat(inputLat);
+    const lng = parseFloat(inputLng);
+    if (isNaN(lat) || isNaN(lng)) {
+        alert('Por favor, ingresa coordenadas válidas');
+        return;
     }
-  };
 
-  const clearAllPins = () => {
-    setPins([]);
+    // Calcular la posición del pin
+    const phi = (90 - lat) * (Math.PI / 180);
+    const theta = lng * (Math.PI / 180);
+    const x = Math.sin(phi) * Math.cos(theta);
+    const y = Math.cos(phi);
+    const z = Math.sin(phi) * Math.sin(theta);
+    const pinDistance = 1.02; // Un poco sobre la superficie
+
+    // Añadir el pin
+    setPins((prevPins) => [
+        ...prevPins,
+        { lat, lng, position: new THREE.Vector3(x, y, z).multiplyScalar(pinDistance) }
+    ]);
+
+    // Limpiar los inputs
+    setInputLat('');
+    setInputLng('');
+};
+
+const handleGeolocation = () => {
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log(`Ubicación obtenida: ${latitude}, ${longitude}`);
+        handleAddPinGeo(latitude, longitude);
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+        alert("No se pudo obtener tu ubicación. Por favor, intenta de nuevo.");
+      }
+    );
+  } else {
+    alert("Tu navegador no soporta geolocalización.");
+  }
+};
+
+
+  const handleClearPins = () => {
+        setPins([]);
   };
 
   return (
@@ -108,9 +170,9 @@ export default function LandsatTabs() {
                   <div>
                     <label htmlFor="latitude" className="block mb-1">Latitude</label>
                     <input
-                      id="latitude"
-                      value={latitude}
-                      onChange={(e) => setLatitude(e.target.value)}
+                      type="number"
+                      value={inputLat}
+                      onChange={(e) => setInputLat(e.target.value)}
                       placeholder="e.g., 40.7128"
                       className="w-full px-3 py-2 border rounded text-white bg-gray-700"
                     />
@@ -118,12 +180,27 @@ export default function LandsatTabs() {
                   <div>
                     <label htmlFor="longitude" className="block mb-1">Longitude</label>
                     <input
-                      id="longitude"
-                      value={longitude}
-                      onChange={(e) => setLongitude(e.target.value)}
+                      type="number"
+                      value={inputLng}
+                      onChange={(e) => setInputLng(e.target.value)}
                       placeholder="e.g., -74.0060"
                       className="w-full px-3 py-2 border rounded text-white bg-gray-700"
                     />
+                  </div>
+                  <div>
+                    <button
+                      onClick={handleAddPin}
+                      disabled={!inputLat || !inputLng} // Botón deshabilitado si faltan coordenadas
+                      style={{
+                          padding: '5px 10px',
+                          background: !inputLat || !inputLng ? '#aaa' : '#2196F3',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '5px',
+                          cursor: !inputLat || !inputLng ? 'not-allowed' : 'pointer'
+                      }}>
+                      Add pin
+                    </button>
                   </div>
                 </div>
               )}
@@ -160,13 +237,22 @@ export default function LandsatTabs() {
                   Set Up Tracking
                 </button>
                 <button
-                  type="button"
-                  onClick={clearAllPins}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  type="button" // Cambiado a type="button"
+                  onClick={handleClearPins}
+                  style={{
+                    padding: '10px',
+                    background: '#f44336',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    marginTop: '10px'
+                  }}
                 >
-                  Clear All Pins
+                  Borrar todos los pines
                 </button>
-              </div>
+                </div>
+
             </form>
           </div>
           <div className="w-full lg:w-1/2 mt-4 lg:mt-0">
@@ -175,12 +261,39 @@ export default function LandsatTabs() {
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} />
                 <Suspense fallback={null}>
-                  <Earth 
-                    locationType={locationType} 
-                    onAddPin={handleAddPin} 
-                    pins={pins}
-                    clearPins={clearAllPins}
-                  />
+                  <mesh
+                    onPointerDown={handleEarthPointerDown}
+                    onPointerMove={handleEarthPointerMove}
+                    onPointerUp={handleEarthPointerUp}
+                    scale={[scale, scale, scale]} // Scale the Earth
+                  >
+                    <sphereGeometry args={[1, 64, 64]} />
+                    <meshStandardMaterial map={texture} />
+                  </mesh>
+
+                {pins.map((pin, index) => (
+                <React.Fragment key={index}>
+                    <mesh position={pin.position.clone().multiplyScalar(scale)}>
+                        <sphereGeometry args={[0.005 * scale, 16, 16]} />
+                        <meshBasicMaterial color="red" />
+                    </mesh>
+                    {(
+                        <Html position={pin.position.clone().multiplyScalar(scale)}>
+                            <div style={{
+                                background: 'rgba(0,0,0,0.8)',
+                                color: 'white',
+                                padding: '5px',
+                                borderRadius: '3px',
+                                fontSize: '12px',
+                                transform: 'translate(10px, -50%)'
+                            }}>
+                                Lat: {pin.lat.toFixed(2)}, Lng: {pin.lng.toFixed(2)}
+                            </div>
+                        </Html>
+                    )}
+                </React.Fragment>
+            ))}
+
                 </Suspense>
                 <OrbitControls enableZoom={true} />
               </Canvas>
