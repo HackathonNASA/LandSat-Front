@@ -9,7 +9,6 @@ import Contact from "./contact.astro"; // Import your Contact section
 import Gallery from "./gallery.astro"; // Import your Gallery section
 
 ---
-
 <Layout title="Landsat Tracker">
   <Navbar />
 
@@ -18,7 +17,8 @@ import Gallery from "./gallery.astro"; // Import your Gallery section
     <Scene client:only="react" /> <!-- Full background Scene component -->
   </div>
 
-  <main class="relative z-10 flex flex-col">
+
+  <main class="relative z-10 flex flex-col mt-[60px]">
     <!-- Home Section -->
     <section id="home" class="relative py-16">
       <Home /> <!-- This is your home section -->
