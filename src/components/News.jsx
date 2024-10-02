@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 export const News = () => {
     const [news, setNews] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const articlesPerPage = 5;
 
     useEffect(() => {
         async function fetchNews() {
@@ -27,15 +29,21 @@ export const News = () => {
         fetchNews();
     }, []);
 
+    const indexOfLastArticle = currentPage * articlesPerPage;
+    const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
+    const currentArticles = news.slice(indexOfFirstArticle, indexOfLastArticle);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     return (
         <section className="relative z-10 py-16">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-4 max-w-4xl">
                 <h1 className="text-5xl font-bold mb-8 text-white text-center tracking-wide">
                     Landsat News
                 </h1>
                 <ul className="space-y-4">
-                    {news.length > 0 ? (
-                        news.map((article) => (
+                    {currentArticles.length > 0 ? (
+                        currentArticles.map((article) => (
                             <li key={article.url} className="bg-gray-800 p-4 rounded-lg shadow-md">
                                 <a href={article.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
                                     <h2 className="text-2xl font-semibold">{article.title}</h2>
@@ -48,6 +56,17 @@ export const News = () => {
                         <p className="text-center text-blue-200">Loading news...</p>
                     )}
                 </ul>
+                <div className="flex justify-center mt-8">
+                    {Array.from({ length: Math.ceil(news.length / articlesPerPage) }, (_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => paginate(index + 1)}
+                            className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-700 text-gray-300'}`}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                </div>
             </div>
         </section>
     );
