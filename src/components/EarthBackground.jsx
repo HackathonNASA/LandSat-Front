@@ -24,7 +24,7 @@ export default function EarthBackground({ escala }) {
     return (
         <>
             {/* Malla de la Tierra */}
-            <mesh ref={earthRef} scale={[scale, scale, scale]}>
+            <mesh ref={earthRef} scale={[scale, scale, scale]} position={[0, -0.3, 0]}>
                 <sphereGeometry args={[0.6, 64, 64]} /> {/* Aumentamos la geometría para más detalle */}
                 
                 <meshStandardMaterial 
@@ -37,7 +37,7 @@ export default function EarthBackground({ escala }) {
             </mesh>
 
             {/* Malla de las nubes */}
-            <mesh ref={cloudRef} scale={[scale, scale, scale]}>
+            <mesh ref={cloudRef} scale={[scale, scale, scale]} position={[0, -0.3, 0]}>
                 <sphereGeometry args={[0.63, 64, 64]} />
                 <meshPhongMaterial 
                     map={cloudMap} 
