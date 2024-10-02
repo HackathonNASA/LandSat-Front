@@ -14,7 +14,7 @@ export default function Scene() {
                     {/* Aquí llamamos al componente de luces */}
                     <Lights />
                     <MovingStars />
-                    <EarthBackground escala="3"/>
+                    <EarthBackground escala="2.5"/>
                     <OrbitControls enableZoom={false} />
                 </Suspense>
                 <Preload all />

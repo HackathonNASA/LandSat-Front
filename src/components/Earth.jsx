@@ -90,8 +90,7 @@ export default function Earth() {
     };
 
     return (
-        <>  
-            <Lights />
+        <Lights>
             <mesh
                 ref={earthRef}
                 onPointerDown={handleEarthPointerDown}
