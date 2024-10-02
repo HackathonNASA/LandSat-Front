@@ -130,7 +130,7 @@ const handleGeolocation = () => {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="flex border-b mb-4">
-        {['Track', 'About', 'News', 'Links', 'Register'].map((tab) => (
+        {['Track', 'News'].map((tab) => (
           <button
             key={tab.toLowerCase()}
             className={`px-4 py-2 ${activeTab === tab.toLowerCase() ? 'border-b-2 border-blue-500' : ''}`}
@@ -301,23 +301,6 @@ const handleGeolocation = () => {
           </div>
         </div>
       )}
-
-      {activeTab === 'about' && (
-        <div>
-          <h2 className="text-2xl font-bold mb-2">About Landsat</h2>
-          <p className="text-white mb-4">Earth observation satellite program</p>
-          <p className="mb-4">Landsat is a series of Earth observation satellites jointly managed by NASA and the U.S. Geological Survey. The Landsat program has been providing continuous global coverage since 1972, making it the longest-running enterprise for acquisition of satellite imagery of Earth.</p>
-          <h3 className="text-lg font-semibold mb-2">Key Features:</h3>
-          <ul className="list-disc list-inside space-y-1">
-            <li>Continuous global record of Earth's surface</li>
-            <li>Medium resolution multispectral data</li>
-            <li>Free and open data policy</li>
-            <li>Supports various applications in agriculture, geology, forestry, regional planning, education, mapping, and global change research</li>
-          </ul>
-        </div>
-      )}
-
-
       {activeTab === 'news' && (
         <div>
           <h2 className="text-2xl font-bold mb-2">Latest Landsat News</h2>
@@ -339,75 +322,6 @@ const handleGeolocation = () => {
               <p>NASA and USGS are planning the next generation of Landsat satellites, dubbed Landsat Next, to continue the program's legacy of Earth observation.</p>
             </li>
           </ul>
-        </div>
-      )}
-
-      {activeTab === 'links' && (
-        <div>
-          <h2 className="text-2xl font-bold mb-2">Useful Links</h2>
-          <p className="text-white mb-4">Learn more about Landsat from official sources</p>
-          <ul className="space-y-4">
-            <li>
-              <a href="https://en.wikipedia.org/wiki/Landsat_program" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                Landsat on Wikipedia
-              </a>
-            </li>
-            <li>
-              <a href="https://landsat.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                NASA Landsat Science
-              </a>
-            </li>
-            <li>
-              <a href="https://www.usgs.gov/core-science-systems/nli/landsat" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                USGS Landsat Missions
-              </a>
-            </li>
-            <li>
-              <a href="https://earth.esa.int/eogateway/missions/landsat" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                European Space Agency - Landsat
-              </a>
-            </li>
-          </ul>
-        </div>
-      )}
-
-      {activeTab === 'register' && (
-        <div>
-          <h2 className="text-2xl font-bold mb-2">User Registration</h2>
-          <p className="text-white mb-4">Sign up to receive email notifications and save your preferences</p>
-          <form onSubmit={handleRegistration} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block mb-1">Email</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                required
-                className="w-full px-3 py-2 border rounded"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block mb-1">Password</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                className="w-full px-3 py-2 border rounded"
-              />
-            </div>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Register
-            </button>
-          </form>
-          <p className="mt-4 text-sm text-white">By registering, you agree to our Terms of Service and Privacy Policy.</p>
         </div>
       )}
     </div>

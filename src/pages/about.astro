@@ -1,5 +1,6 @@
 ---
 import { Rocket, Globe, Camera, ChartLine } from "lucide-react";
+import React from "react";
 
 const landsatFacts = [
     { text: "First launched in 1972", icon: Rocket },
@@ -44,6 +45,34 @@ const landsatFacts = [
                 <p class="text-lg text-blue-200">
                     Landsat data has been instrumental in advancing our understanding of climate change, deforestation, water resource management, urban growth, and countless other areas of environmental science and land management. The long-term data archive enables scientists and researchers to track environmental changes over time, providing critical insights into how human activity and natural phenomena are shaping the planet.
                 </p>
+            </div>
+            <div class="mt-12">
+                <h2 class="text-3xl font-semibold mb-4 text-white">
+                    Useful Links
+                </h2>
+                <p class="text-lg text-blue-200 mb-4">Learn more about Landsat from official sources</p>
+                <ul class="text-lg text-white space-y-2">
+                    <li>
+                        <a href="https://en.wikipedia.org/wiki/Landsat_program" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline hover:text-blue-300 transition duration-300">
+                            Landsat on Wikipedia
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://landsat.gsfc.nasa.gov/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline hover:text-blue-300 transition duration-300">
+                            NASA Landsat Science
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.usgs.gov/core-science-systems/nli/landsat" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline hover:text-blue-300 transition duration-300">
+                            USGS Landsat Missions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://earth.esa.int/eogateway/missions/landsat" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline hover:text-blue-300 transition duration-300">
+                            European Space Agency - Landsat
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

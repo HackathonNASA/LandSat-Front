@@ -7,7 +7,7 @@ import About from "./about.astro"; // Import your About section
 import Data from "./data.astro"; // Import your Data section
 import Contact from "./contact.astro"; // Import your Contact section
 import Gallery from "./gallery.astro"; // Import your Gallery section
-
+import News from "./news.astro"; // Import your News section
 ---
 <Layout title="Landsat Tracker">
   <Navbar />
@@ -21,7 +21,7 @@ import Gallery from "./gallery.astro"; // Import your Gallery section
   <main class="relative z-10 flex flex-col mt-[60px]">
     <!-- Home Section -->
     <section id="home" class="relative py-16">
-      <Home /> <!-- This is your home section -->
+      <Home />
     </section>
 
     <!-- Data Section -->
@@ -32,6 +32,11 @@ import Gallery from "./gallery.astro"; // Import your Gallery section
     <!-- Gallery Section -->
     <section id="gallery" class="relative py-16">
       <Gallery />
+    </section>
+
+    <!-- News Section -->
+    <section id="news" class="relative py-16">
+      <News />
     </section>
 
     <!-- About Section -->
