@@ -90,7 +90,8 @@ export default function Earth() {
     };
 
     return (
-        <>
+        <>  
+            <Lights />
             <mesh
                 ref={earthRef}
                 onPointerDown={handleEarthPointerDown}
@@ -191,6 +192,23 @@ export default function Earth() {
                     </div>
                 </Html>
             )}
+        </Lights>
+    );
+}
+
+
+
+function Lights() {
+    return (
+        <>
+            {/* Luz ambiental para dar iluminación general a la escena */}
+            <ambientLight intensity={0.8} />
+
+            {/* Luz puntual para iluminar desde un punto específico */}
+            <pointLight position={[1, -10, -105]} intensity={1.2} />
+
+            {/* Luz direccional para iluminar desde una dirección */}
+            <directionalLight position={[0, 10, 0]} intensity={1.5} />
         </>
     );
 }

@@ -4,6 +4,8 @@ import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
+import EarthBackground from './EarthBackground.jsx';
+
 export default function LandsatTabs() {
   const [activeTab, setActiveTab] = useState('track');
   const [locationType, setLocationType] = useState("coordinates");
@@ -13,6 +15,7 @@ export default function LandsatTabs() {
   const [password, setPassword] = useState("");
   const [pins, setPins] = useState([]);
   const texture = useLoader(THREE.TextureLoader, '/assets/textures/earthmap1k.jpg');
+  const textureCloud = useLoader(THREE.TextureLoader, '/assets/textures/earthCloud.png');
 
   const [scale, setScale] = useState(1.7);
   const [isDragging, setIsDragging] = useState(false);
@@ -258,7 +261,7 @@ const handleGeolocation = () => {
           <div className="w-full lg:w-1/2 mt-4 lg:mt-0">
             <div className="h-[500px] bg-gray-800 rounded-lg overflow-hidden">
               <Canvas>
-                <ambientLight intensity={0.5} />
+                <ambientLight intensity={1.5} />
                 <pointLight position={[10, 10, 10]} />
                 <Suspense fallback={null}>
                   <mesh
@@ -269,6 +272,15 @@ const handleGeolocation = () => {
                   >
                     <sphereGeometry args={[1, 64, 64]} />
                     <meshStandardMaterial map={texture} />
+                  </mesh>
+                  <mesh scale={[scale, scale, scale]}>
+                    <sphereGeometry args={[1, 64, 64]} />
+                    <meshPhongMaterial 
+                        map={textureCloud } 
+                        transparent={true}
+                        opacity={0.4}  
+                        depthWrite={false}  
+                    />
                   </mesh>
 
                 {pins.map((pin, index) => (
