@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import HistoryIcon from '@mui/icons-material/History'; // Represents historical data
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'; // Represents live data
-import DatePicker from 'react-datepicker'; // Assuming you're using a date picker library like 'react-datepicker'
+import React, { useState, useEffect } from 'react';
+import { Satellite, CloudQueue, History, PlayArrow, Notifications, Email } from '@mui/icons-material';
+import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
-const DataFilter = () => {
+export default function DataFilter() {
     const [filterOption, setFilterOption] = useState('live');
-    const [cloudCoverage, setCloudCoverage] = useState(50); // Cloud coverage state
+    const [cloudCoverage, setCloudCoverage] = useState(50);
     const [selectedData, setSelectedData] = useState({
         data1: false,
         data2: false,
@@ -15,23 +14,32 @@ const DataFilter = () => {
         data5: false,
         data6: false,
     });
-    const [startDate, setStartDate] = useState(new Date()); // For historical data
-    const [endDate, setEndDate] = useState(new Date()); // For historical data
-    const [selectedSatellites, setSelectedSatellites] = useState({ // Changed to store selected satellites
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    const [selectedSatellites, setSelectedSatellites] = useState({
         landsat8: false,
         landsat9: false,
     });
-    const [notificationDelay, setNotificationDelay] = useState("15min"); // For live notification
+    const [notificationDelay, setNotificationDelay] = useState("15min");
     const [email, setEmail] = useState('');
-    const [notificationType, setNotificationType] = useState('browser'); // Added notificationType state
+    const [notificationType, setNotificationType] = useState('browser');
+    const [satellitePassTime, setSatellitePassTime] = useState({ landsat8: null, landsat9: null });
 
-    // Handle filter option (historical vs live)
+    useEffect(() => {
+        // Simular el cálculo del tiempo de paso del satélite
+        if (selectedSatellites.landsat8) {
+            setSatellitePassTime(prev => ({ ...prev, landsat8: Math.floor(Math.random() * 24) + 1 }));
+        }
+        if (selectedSatellites.landsat9) {
+            setSatellitePassTime(prev => ({ ...prev, landsat9: Math.floor(Math.random() * 24) + 1 }));
+        }
+    }, [selectedSatellites]);
+
     const handleFilterChange = (option) => {
         setFilterOption(option);
         setEmail('');
     };
 
-    // Handle data checkbox selection
     const handleCheckboxChange = (e) => {
         const { name, checked } = e.target;
         setSelectedData((prevState) => ({
@@ -40,12 +48,10 @@ const DataFilter = () => {
         }));
     };
 
-    // Handle cloud coverage change
     const handleCloudCoverageChange = (e) => {
         setCloudCoverage(e.target.value);
     };
 
-    // Handle satellite checkbox selection
     const handleSatelliteChange = (e) => {
         const { name, checked } = e.target;
         setSelectedSatellites((prevState) => ({
@@ -54,256 +60,208 @@ const DataFilter = () => {
         }));
     };
 
-    // Handle date selection with a max range of 16 days for historical data
     const maxHistoricalDate = new Date();
-    maxHistoricalDate.setDate(maxHistoricalDate.getDate() - 16); // Limit to last 16 days
+    const minHistoricalDate = new Date(maxHistoricalDate);
+    minHistoricalDate.setDate(minHistoricalDate.getDate() - 16);
 
     return (
-        <section className="relative z-10 py-16">
-            <div className="container mx-auto px-4">
-                <div className="flex flex-wrap">
-                    <div className="w-full lg:w-3/4 pr-4">
-                        <div className="relative z-10 py-4 text-white">
-                            <h3 className="text-2xl font-bold mb-4 text-left">Filter Options</h3>
+        <div className="min-h-screen text-white p-8">
+            <div className="max-w-4xl mx-auto bg-black bg-opacity-60 rounded-lg shadow-lg p-8 backdrop-blur-sm">
+                <h2 className="text-3xl font-bold mb-6 text-center">Landsat Data Filter</h2>
 
-                            {/* Data Selection Checkboxes */}
-                            <div className="mb-6 text-left">
-                                <h4 className="text-lg font-semibold mb-2">Select Data Types</h4>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {Object.keys(selectedData).map((dataType, index) => (
-                                        <label key={index} className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                name={dataType}
-                                                checked={selectedData[dataType]}
-                                                onChange={handleCheckboxChange}
-                                                className="h-4 w-4 text-black"
-                                            />
-                                            <span>Data {index + 1}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Cloud Coverage Slider */}
-                            <div className="mb-6 text-center">
-                                <h4 className="text-lg font-semibold mb-2">Cloud Coverage</h4>
-                                <div className="flex items-center justify-center">
+                <div className="space-y-8">
+                    {/* Data Type Selection */}
+                    <div>
+                        <h3 className="text-lg font-semibold mb-4 flex items-center">
+                            <Satellite className="mr-2 text-blue-500" /> Select Data Types
+                        </h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            {Object.keys(selectedData).map((dataType, index) => (
+                                <label
+                                    key={index}
+                                    className="flex items-center bg-white shadow-md rounded-md p-2 space-x-2 cursor-pointer hover:shadow-lg transition-shadow duration-200"
+                                >
                                     <input
-                                        type="range"
-                                        min="0"
-                                        max="100"
-                                        value={cloudCoverage}
-                                        onChange={handleCloudCoverageChange}
-                                        className="mr-4 w-full lg:w-2/3"
+                                        type="checkbox"
+                                        name={dataType}
+                                        checked={selectedData[dataType]}
+                                        onChange={handleCheckboxChange}
+                                        className="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-200"
                                     />
-                                    <span className="text-white">{cloudCoverage}%</span>
+                                    <span className="text-gray-700 text-sm">Data {index + 1}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+
+                    {/* Cloud Coverage */}
+                    <div>
+                        <h3 className="text-xl font-semibold mb-4 flex items-center">
+                            <CloudQueue className="mr-2" /> Cloud Coverage
+                        </h3>
+                        <div className="flex items-center space-x-4">
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={cloudCoverage}
+                                onChange={handleCloudCoverageChange}
+                                className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
+                            />
+                            <span className="text-lg font-semibold">{cloudCoverage}%</span>
+                        </div>
+                    </div>
+
+                    {/* Historical/Live Toggle */}
+                    <div>
+                        <h3 className="text-xl font-semibold mb-4 ">Data Mode</h3>
+                        <div className="flex justify-center space-x-4">
+                            <button
+                                onClick={() => handleFilterChange('historical')}
+                                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors duration-200 ${filterOption === 'historical' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                            >
+                                <History />
+                                <span>Historical</span>
+                            </button>
+                            <button
+                                onClick={() => handleFilterChange('live')}
+                                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors duration-200 ${filterOption === 'live' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                            >
+                                <PlayArrow />
+                                <span>Live</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    {/* Historical Data Options */}
+                    {filterOption === 'historical' && (
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-semibold mb-4">Historical Data Options</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block mb-2">Start Date</label>
+                                    <DatePicker
+                                        selected={startDate}
+                                        onChange={(date) => setStartDate(date)}
+                                        maxDate={maxHistoricalDate}
+                                        minDate={minHistoricalDate}
+                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block mb-2">End Date</label>
+                                    <DatePicker
+                                        selected={endDate}
+                                        onChange={(date) => setEndDate(date)}
+                                        maxDate={new Date()}
+                                        minDate={startDate}
+                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
+                                    />
                                 </div>
                             </div>
 
-                            {/* Historical/Live Data Toggle */}
-                            <div className="flex items-center justify-center mb-6">
-                                <div className="flex items-center space-x-2">
-                                    <span className="font-semibold">Historical</span>
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            borderRadius: "100px",
-                                            backgroundColor: "#0036FF80",
-                                            position: "relative",
-                                            width: "140px",
-                                            height: "32px",
-                                        }}
+                        </div>
+                    )}
+
+                    {/* Live Data Options */}
+                    {filterOption === 'live' && (
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-semibold mb-4">Live Data Options</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block mb-2">Notification Delay</label>
+                                    <select
+                                        value={notificationDelay}
+                                        onChange={(e) => setNotificationDelay(e.target.value)}
+                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
                                     >
-                                        <div
-                                            style={{
-                                                position: "absolute",
-                                                top: 0,
-                                                left: 0,
-                                                width: "50%",
-                                                height: "100%",
-                                                backgroundColor: "#0036FF",
-                                                borderRadius: "40px",
-                                                transition: "transform 0.3s ease",
-                                                transform: filterOption === "live" ? "translateX(100%)" : "translateX(0)",
-                                            }}
-                                        />
-                                        <div
-                                            style={{
-                                                flex: 1,
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                zIndex: 1,
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() => handleFilterChange('historical')}
-                                        >
-                                            <HistoryIcon style={{ color: filterOption === 'historical' ? "white" : "#FFFFFF80" }} />
-                                        </div>
-                                        <div
-                                            style={{
-                                                flex: 1,
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                zIndex: 1,
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() => handleFilterChange('live')}
-                                        >
-                                            <PlayArrowIcon style={{ color: filterOption === 'live' ? "white" : "#FFFFFF80" }} />
-                                        </div>
-                                    </div>
-                                    <span className="font-semibold">Live</span>
+                                        <option value="15min">15 minutes</option>
+                                        <option value="30min">30 minutes</option>
+                                        <option value="1h">1 hour</option>
+                                        <option value="2h">2 hours</option>
+                                    </select>
                                 </div>
+                                <div>
+                                    <label className="block mb-4">Notification Type</label>
+
+                                    <div className="flex items-center gap-5">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                value="browser"
+                                                checked={notificationType === 'browser'}
+                                                onChange={(e) => setNotificationType(e.target.value)}
+                                                className="form-radio h-5 w-5 text-blue-600"
+                                            />
+                                            <span className="flex items-center">
+                                                <Notifications className="mr-2" /> Browser
+                                            </span>
+                                        </label>
+
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                value="email"
+                                                checked={notificationType === 'email'}
+                                                onChange={(e) => setNotificationType(e.target.value)}
+                                                className="form-radio h-5 w-5 text-blue-600"
+                                            />
+                                            <span className="flex items-center">
+                                                <Email className="mr-2" /> Email
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
                             </div>
 
-                            {/* Date Range for Historical Data */}
-                            {filterOption === 'historical' && (
-                                <div className="mb-6">
-                                    <h4 className="text-lg font-semibold mb-2">Select Time Range</h4>
-                                    <div className="flex space-x-4">
-                                        <div>
-                                            <label className="block mb-1">Start Date</label>
-                                            <DatePicker
-                                                selected={startDate}
-                                                onChange={(date) => setStartDate(date)}
-                                                maxDate={maxHistoricalDate}
-                                                className="px-4 py-2 w-full text-black border rounded"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block mb-1">End Date</label>
-                                            <DatePicker
-                                                selected={endDate}
-                                                onChange={(date) => setEndDate(date)}
-                                                maxDate={new Date()}
-                                                className="px-4 py-2 w-full text-black border rounded"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Satellite Selection under Historical */}
-                                    <h4 className="text-lg font-semibold mb-2 mt-4">Select Satellite</h4>
-                                    <div className="flex flex-col space-y-3">
-                                        <label className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                name="landsat8"
-                                                checked={selectedSatellites.landsat8}
-                                                onChange={handleSatelliteChange}
-                                                className="h-4 w-4 text-black"
-                                            />
-                                            <span>Landsat 8</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                name="landsat9"
-                                                checked={selectedSatellites.landsat9}
-                                                onChange={handleSatelliteChange}
-                                                className="h-4 w-4 text-black"
-                                            />
-                                            <span>Landsat 9</span>
-                                        </label>
-                                    </div>
+                            {notificationType === 'email' && (
+                                <div>
+                                    <label htmlFor="email" className="block mb-2">Email Address</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="example@email.com"
+                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
+                                        required
+                                    />
                                 </div>
                             )}
+                        </div>
+                    )}
 
-                            {/* Satellite and Notification Options for Live Data */}
-                            {filterOption === 'live' && (
-                                <>
-                                    {/* Notification Delay */}
-                                    <div className="mb-6">
-                                        <h4 className="text-lg font-semibold mb-2">Notification Delay</h4>
-                                        <select
-                                            value={notificationDelay}
-                                            onChange={(e) => setNotificationDelay(e.target.value)}
-                                            className="px-4 py-2 w-full text-black border rounded"
-                                        >
-                                            <option value="15min">15 minutes</option>
-                                            <option value="30min">30 minutes</option>
-                                            <option value="1h">1 hour</option>
-                                            <option value="2h">2 hours</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Notification Type */}
-                                    <div className="mb-6">
-                                        <h4 className="text-lg font-semibold mb-2">Notification Type</h4>
-                                        <div className="flex flex-col space-y-3">
-                                            <label className="flex items-center space-x-2">
-                                                <input
-                                                    type="radio"
-                                                    value="browser"
-                                                    checked={notificationType === 'browser'}
-                                                    onChange={(e) => setNotificationType(e.target.value)}
-                                                    className="h-4 w-4 text-black"
-                                                />
-                                                <span>Browser Notifications</span>
-                                            </label>
-                                            <label className="flex items-center space-x-2">
-                                                <input
-                                                    type="radio"
-                                                    value="email"
-                                                    checked={notificationType === 'email'}
-                                                    onChange={(e) => setNotificationType(e.target.value)}
-                                                    className="h-4 w-4 text-black"
-                                                />
-                                                <span>Email Notifications</span>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    {/* Email Input Field */}
-                                    {notificationType === 'email' && (
-                                        <div className="mt-4">
-                                            <label htmlFor="email" className="block mb-1">Email Address</label>
-                                            <input
-                                                type="email"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                placeholder="e.g., example@mail.com"
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none text-black" // Text input style
-                                                required
-                                            />
-                                        </div>
-                                    )}
-
-                                    {/* Satellite Selection */}
-                                    <h4 className="text-lg font-semibold mb-2">Select Satellite</h4>
-                                    <div className="flex flex-col space-y-3">
-                                        <label className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                name="landsat8"
-                                                checked={selectedSatellites.landsat8}
-                                                onChange={handleSatelliteChange}
-                                                className="h-4 w-4 text-black"
-                                            />
-                                            <span>Landsat 8</span>
-                                        </label>
-                                        <label className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                name="landsat9"
-                                                checked={selectedSatellites.landsat9}
-                                                onChange={handleSatelliteChange}
-                                                className="h-4 w-4 text-black"
-                                            />
-                                            <span>Landsat 9</span>
-                                        </label>
-                                    </div>
-                                    <p className="mt-2 text-sm text-gray-400">Live data may take some time to process.</p>
-                                </>
-                            )}
+                    {/* Satellite Selection */}
+                    <div className="space-y-4">
+                        <h3 className="text-xl font-semibold mb-4">Select Satellites</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="landsat8"
+                                    checked={selectedSatellites.landsat8}
+                                    onChange={handleSatelliteChange}
+                                    className="form-checkbox h-5 w-5 text-blue-600"
+                                />
+                                <span>Landsat 8 (Pass Time: {satellitePassTime.landsat8 ? `${satellitePassTime.landsat8}h` : 'N/A'})</span>
+                            </label>
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="landsat9"
+                                    checked={selectedSatellites.landsat9}
+                                    onChange={handleSatelliteChange}
+                                    className="form-checkbox h-5 w-5 text-blue-600"
+                                />
+                                <span>Landsat 9 (Pass Time: {satellitePassTime.landsat9 ? `${satellitePassTime.landsat9}h` : 'N/A'})</span>
+                            </label>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
-};
-
-export default DataFilter;
+}
