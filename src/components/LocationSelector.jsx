@@ -3,6 +3,8 @@ import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+
 export default function LocationSelector() {
     const [locationType, setLocationType] = useState("coordinates");
     const [inputLat, setInputLat] = useState('');
@@ -110,6 +112,15 @@ export default function LocationSelector() {
 
     const handleClearPins = () => {
         setPins([]);
+    };
+    const handleZoomIn = () => {
+        setScale(prevScale => Math.max(prevScale + 0.1, 0.1)); // Decrease scale, set minimum to 0.1
+        controlsRef.current.zoomIn();
+    };
+
+    const handleZoomOut = () => {
+        setScale(prevScale => prevScale - 0.1); // Increase scale
+        controlsRef.current.zoomOut();
     };
 
     return (
@@ -250,7 +261,8 @@ export default function LocationSelector() {
                         </form>
                     </div>
                     <div className="w-full lg:w-1/2 mt-4 lg:mt-0">
-                        <div className="h-[350px] bg-gray-600 rounded-lg overflow-hidden">
+                        <div
+                            className="h-[350px] bg-gray-600 rounded-lg overflow-hidden relative"> {/* Add relative positioning here */}
                             <Canvas>
                                 <ambientLight intensity={1.5}/>
                                 <pointLight position={[10, 10, 10]}/>
@@ -261,13 +273,13 @@ export default function LocationSelector() {
                                         onPointerUp={handleEarthPointerUp}
                                         scale={[scale, scale, scale]}
                                     >
-                                        <sphereGeometry args={[1, 64, 64]} />
-                                        <meshStandardMaterial map={texture} />
+                                        <sphereGeometry args={[1, 64, 64]}/>
+                                        <meshStandardMaterial map={texture}/>
                                     </mesh>
                                     <mesh scale={[scale, scale, scale]}>
-                                        <sphereGeometry args={[1, 64, 64]} />
+                                        <sphereGeometry args={[1, 64, 64]}/>
                                         <meshPhongMaterial
-                                            map={textureCloud }
+                                            map={textureCloud}
                                             transparent={true}
                                             opacity={0.4}
                                             depthWrite={false}
@@ -277,8 +289,8 @@ export default function LocationSelector() {
                                     {pins.map((pin, index) => (
                                         <React.Fragment key={index}>
                                             <mesh position={pin.position.clone().multiplyScalar(scale)}>
-                                                <sphereGeometry args={[0.005 * scale, 16, 16]} />
-                                                <meshBasicMaterial color="red" />
+                                                <sphereGeometry args={[0.005 * scale, 16, 16]}/>
+                                                <meshBasicMaterial color="red"/>
                                             </mesh>
                                             <Html position={pin.position.clone().multiplyScalar(scale)}>
                                                 <div style={{
@@ -295,8 +307,23 @@ export default function LocationSelector() {
                                         </React.Fragment>
                                     ))}
                                 </Suspense>
-                                <OrbitControls enableZoom={true} minDistance={2} maxDistance={4} /> {/* Set your desired min/max distances */}
+                                <OrbitControls enableZoom={true} minDistance={2} maxDistance={4}/>
                             </Canvas>
+                            {/* Zoom buttons */}
+                            <div className="absolute bottom-4 right-4 flex flex-col space-y-2">
+                                <button
+                                    onClick={handleZoomIn}
+                                    className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600"
+                                >
+                                    +
+                                </button>
+                                <button
+                                    onClick={handleZoomOut}
+                                    className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600"
+                                >
+                                    -
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
