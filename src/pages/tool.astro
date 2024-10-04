@@ -1,5 +1,7 @@
 ---
-import LandsatTabs from '../components/LandsatTabs.jsx';
+import LocationSelector from '../components/LocationSelector.jsx';
+import DataFilter from '../components/DataFilter.jsx';
+import ResultsDisplay from '../components/ResultsDisplay.jsx';
 ---
 
 <section id="tool" class="relative min-h-screen bg-space bg-cover bg-center overflow-hidden py-16">
@@ -7,6 +9,39 @@ import LandsatTabs from '../components/LandsatTabs.jsx';
         <h1 class="text-5xl font-bold mb-8 text-white text-center tracking-wide">
             Tool
         </h1>
-        <LandsatTabs client:only />
+        <LocationSelector client:only />
+        <DataFilter client:only />
+
     </div>
 </section>
+
+<style>
+    .toggle-bg {
+        width: 56px;
+        height: 28px;
+        background-color: #ccc;
+        border-radius: 14px;
+        position: relative;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .toggle-dot {
+        width: 24px;
+        height: 24px;
+        background-color: white;
+        border-radius: 12px;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s ease;
+    }
+
+    input[type="checkbox"]:checked + .toggle-bg {
+        background-color: #3b82f6; /* Color when checked */
+    }
+
+    input[type="checkbox"]:checked + .toggle-bg .toggle-dot {
+        transform: translateX(28px); /* Move dot to the right */
+    }
+</style>

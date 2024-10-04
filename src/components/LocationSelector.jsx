@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 import EarthBackground from './EarthBackground.jsx';
 
-export default function LandsatTabs() {
+export default function LocationSelector() {
     const [activeTab, setActiveTab] = useState('track');
     const [locationType, setLocationType] = useState("coordinates");
     const [inputLat, setInputLat] = useState('');
@@ -120,13 +120,12 @@ export default function LandsatTabs() {
             <div className="container mx-auto px-4">
                 <div className="flex flex-wrap">
                     <div className="w-full lg:w-1/2 pr-4">
-                        <h2 className="text-2xl font-bold mb-2">Track Landsat</h2>
-                        <p className="text-white mb-4">Set up notifications for Landsat passes over your location</p>
+                        <h2 className="text-2xl font-bold mb-2">Landsat</h2>
                         <form onSubmit={handleTrackSubmit} className="space-y-6">
                             <div>
                                 <p className="font-bold mb-2">Define Target Location</p>
                                 <div className="flex space-x-4">
-                                    {['coordinates', 'map', 'geolocation'].map((type) => (
+                                    {['coordinates', 'Path/Row', 'map', 'geolocation'].map((type) => (
                                         <label key={type} className="flex items-center">
                                             <input
                                                 type="radio"
@@ -143,6 +142,8 @@ export default function LandsatTabs() {
 
                             {locationType === 'coordinates' && (
                                 <div className="grid grid-cols-2 gap-4">
+                                    <p className="col-span-2 mb-2">Specify the latitude and longitude of the desired
+                                        location</p>
                                     <div>
                                         <label htmlFor="latitude" className="block mb-1">Latitude</label>
                                         <input
@@ -180,7 +181,48 @@ export default function LandsatTabs() {
                                     </div>
                                 </div>
                             )}
-
+                            {locationType === 'Path/Row' && (
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label htmlFor="path" className="block mb-1">Path</label>
+                                        <input
+                                            type="number"
+                                            value={inputLat}
+                                            onChange={(e) => setInputLat(e.target.value)}
+                                            placeholder="e.g., 20"
+                                            className="w-full px-3 py-2 border rounded text-white bg-gray-700"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="row" className="block mb-1">Row</label>
+                                        <input
+                                            type="number"
+                                            value={inputLng}
+                                            onChange={(e) => setInputLng(e.target.value)}
+                                            placeholder="e.g., 30"
+                                            className="w-full px-3 py-2 border rounded text-white bg-gray-700"
+                                        />
+                                    </div>
+                                    <div>
+                                        <button
+                                            onClick={handleAddPin}
+                                            disabled={!inputLat || !inputLng}
+                                            style={{
+                                                padding: '5px 10px',
+                                                background: !inputLat || !inputLng ? '#aaa' : '#2196F3',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '5px',
+                                                cursor: !inputLat || !inputLng ? 'not-allowed' : 'pointer'
+                                            }}>
+                                            Add pin
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                            {locationType === 'map' && (
+                                <p className="mb-2">Click on the Earth to add a pin</p>
+                            )}
                             {locationType === 'geolocation' && (
                                 <button
                                     type="button"
@@ -191,50 +233,30 @@ export default function LandsatTabs() {
                                 </button>
                             )}
 
-                            <hr className="my-4" />
+                            <hr className="my-4"/>
 
-                            <div>
-                                <p className="font-bold mb-2">Notification Method</p>
-                                <div className="space-y-2">
-                                    <label className="flex items-center">
-                                        <input type="checkbox" className="mr-2" /> Browser Notifications
-                                    </label>
-                                    <label className="flex items-center">
-                                        <input type="checkbox" className="mr-2" /> Email Notifications
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div className="flex space-x-4">
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                                >
-                                    Set Up Tracking
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={handleClearPins}
-                                    style={{
-                                        padding: '10px',
-                                        background: '#f44336',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '5px',
-                                        cursor: 'pointer',
-                                        marginTop: '10px'
-                                    }}
-                                >
-                                    Borrar todos los pines
-                                </button>
-                            </div>
+                            <button
+                                type="button"
+                                onClick={handleClearPins}
+                                style={{
+                                    padding: '10px',
+                                    background: '#f44336',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer',
+                                    marginTop: '10px'
+                                }}
+                            >
+                                Remove all pins
+                            </button>
                         </form>
                     </div>
                     <div className="w-full lg:w-1/2 mt-4 lg:mt-0">
-                        <div className="h-[500px] bg-gray-800 rounded-lg overflow-hidden">
+                        <div className="h-[350px] bg-gray-600 rounded-lg overflow-hidden">
                             <Canvas>
-                                <ambientLight intensity={1.5} />
-                                <pointLight position={[10, 10, 10]} />
+                                <ambientLight intensity={1.5}/>
+                                <pointLight position={[10, 10, 10]}/>
                                 <Suspense fallback={null}>
                                     <mesh
                                         onPointerDown={handleEarthPointerDown}
