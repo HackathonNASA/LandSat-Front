@@ -1,13 +1,13 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from "../layouts/Layout.astro"; // Import the Layout component
 import Scene from "../components/Scene.jsx"; // Import the Scene component
-import Navbar from "../components/Navbar.astro"; // Import the Navbar
-import Home from "./home.astro"; // Section with LandsatInfo
-import About from "./about.astro"; // Import your About section
-import Data from "./data.astro"; // Import your Data section
-import Contact from "./contact.astro"; // Import your Contact section
-import Tool from "./tool.astro"; // Import your Gallery section
-import News from "./news.astro"; // Import your News section
+import Navbar from "../layouts/Navbar.astro"; // Import the Navbar
+import Home from "./sections/home.astro"; // Section with LandsatInfo
+import About from "./sections/about.astro"; // Import your About section
+import Data from "./sections/data.astro"; // Import your Data section
+import Contact from "./sections/contact.astro"; // Import your Contact section
+import Tool from "./sections/tool.astro"; // Import your Gallery section
+import News from "./sections/news.astro"; // Import your News section
 ---
 <Layout title="Landsat Tracker">
   <Navbar />

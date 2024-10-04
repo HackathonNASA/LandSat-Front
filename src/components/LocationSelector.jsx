@@ -13,8 +13,12 @@ export default function LocationSelector() {
     const texture = useLoader(THREE.TextureLoader, '/assets/textures/earthmap1k.jpg');
     const textureCloud = useLoader(THREE.TextureLoader, '/assets/textures/earthCloud.png');
 
-    const [scale, setScale] = useState(1.7);
+    const [scale, setScale] = useState(1.5);
     const [isDragging, setIsDragging] = useState(false);
+
+    // Define min and max scale
+    const minScale = 1.5;
+    const maxScale = 3.0;
 
     const handleEarthPointerDown = () => {
         setIsDragging(false);
@@ -113,15 +117,19 @@ export default function LocationSelector() {
     const handleClearPins = () => {
         setPins([]);
     };
+
     const handleZoomIn = () => {
-        setScale(prevScale => Math.max(prevScale + 0.1, 0.1)); // Decrease scale, set minimum to 0.1
-        controlsRef.current.zoomIn();
+        setScale(prevScale => Math.min(prevScale + 0.1, maxScale)); // Increase scale, set maximum to maxScale
+
     };
 
     const handleZoomOut = () => {
-        setScale(prevScale => prevScale - 0.1); // Increase scale
-        controlsRef.current.zoomOut();
+        setScale(prevScale => Math.max(prevScale - 0.1, minScale)); // Decrease scale, set minimum to minScale
     };
+
+    // Print the function definitions to the console
+    console.log(handleZoomIn.toString());
+    console.log(handleZoomOut.toString());
 
     return (
         <section className="relative z-10 py-16">

@@ -1,6 +1,7 @@
 // ResultsDisplay.jsx
 import React from 'react';
 
+//ADD RESULTS DISPLAY COMPONENT
 const ResultsDisplay = () => {
     return (
         <div className="relative z-10 py-4">

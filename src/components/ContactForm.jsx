@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+//CONTACT FORM USED IN CONTACT SECTION
 const ContactForm = () => {
     const [formStatus, setFormStatus] = useState('');
     const [errorDetails, setErrorDetails] = useState('');

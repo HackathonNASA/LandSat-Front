@@ -6,6 +6,7 @@ import EarthBackground from './EarthBackground.jsx';
 import CanvasLoader from './Loader';
 import MovingStars from './MovingStars.jsx';
 
+// CREATES THE BACKGROUND SCENE
 export default function Scene() {
     return (
         <div className="h-full max-h-[calc(100vh-<altura-del-navbar>)] w-full">
