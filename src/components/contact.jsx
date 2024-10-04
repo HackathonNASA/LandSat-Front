@@ -8,7 +8,7 @@ const ContactForm = () => {
         event.preventDefault();
         const formData = new FormData(event.target);
         try {
-            const response = await fetch('../pages/api/send-email', { // Asegúrate de que la ruta sea correcta
+            const response = await fetch('http://localhost:4321/api/send-email', {
                 method: 'POST',
                 body: formData,
             });
@@ -23,7 +23,7 @@ const ContactForm = () => {
                 throw new Error(data.message || 'Server response was not ok.');
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error:', error); // Esto imprime el error en la consola
             setFormStatus('There was an error sending your message. Please try again.');
             setErrorDetails(error.message || 'Unknown error occurred');
         }
