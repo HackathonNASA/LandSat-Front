@@ -10,8 +10,8 @@ export const News = () => {
             const url = 'https://newsapi.org/v2/everything?' +
                 'q=Landsat&' +
                 'language=en&' +
-                'sortBy=relevancy&' +
-                'apiKey=b85c94394aad4430baf3a29b1b81ffde';
+                'sortBy=publishedAt&' +
+                'apiKey=84f30ca603be44a6b7f18235a0aa7a70';
 
             const req = new Request(url);
 
