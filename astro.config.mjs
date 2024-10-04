@@ -3,44 +3,47 @@ import { defineConfig } from 'astro/config';
 // Integrations
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
-import mdx from '@astrojs/mdx'; // Optional: Add MDX support
+import mdx from '@astrojs/mdx';
 
 // Astro configuration
 export default defineConfig({
   // Global settings
-  site: 'https://yourdomain.com', // Add site URL for SEO
-  base: '/', // Base path for your site
-  trailingSlash: 'never', // Control trailing slashes in URLs
+  site: 'https://yourdomain.com',
+  base: '/',
+  trailingSlash: 'never',
+
+  // Change output to 'server' for API routes
+  output: 'server',
 
   // Integrations
   integrations: [
     react(),
     tailwind({
       config: {
-        applyBaseStyles: false, // Optional: disable base styles if needed
+        applyBaseStyles: false,
       },
     }),
-    mdx(), // Optional: enable MDX support
+    mdx(),
   ],
 
   // Vite configuration
   vite: {
     resolve: {
       alias: {
-        '@components': '/src/components', // Adjust the path as necessary
+        '@components': '/src/components',
         '@assets': '/src/assets',
       },
     },
   },
 
   // Compress HTML output (optional)
-  compressHTML: true, // Enable HTML compression for performance
+  compressHTML: true,
 
   // TailwindCSS optimizations
   tailwindcss: {
-    mode: 'jit', // Just-in-time mode
-    purge: ['./src/**/*.{astro,html,js,jsx,ts,tsx}'], // Purge unused CSS in production
-    darkMode: 'media', // Enable dark mode based on media query
+    mode: 'jit',
+    purge: ['./src/**/*.{astro,html,js,jsx,ts,tsx}'],
+    darkMode: 'media',
     theme: {
       extend: {
         colors: {
@@ -49,14 +52,14 @@ export default defineConfig({
         },
       },
     },
-    plugins: [], // Add additional TailwindCSS plugins if necessary
+    plugins: [],
   },
 
   // Optional: Markdown config (for static Markdown if needed)
   markdown: {
-    syntaxHighlight: 'shiki', // Enable syntax highlighting with Shiki
+    syntaxHighlight: 'shiki',
     shikiConfig: {
-      theme: 'github-dark', // Choose theme for Shiki
+      theme: 'github-dark',
     },
   },
 });
