@@ -17,20 +17,6 @@ const dataCategories = [
         details:
             "Dive into our extensive archive of Landsat data dating back to 1972. Track changes in land use, urban growth, and environmental shifts over time.",
     },
-    {
-        title: "Data Analysis Tools",
-        description: "Access tools for analyzing Landsat data.",
-        icon: FileText,
-        details:
-            "Utilize our suite of analysis tools to process and interpret Landsat data. Features include spectral analysis, change detection, and vegetation indices calculation.",
-    },
-    {
-        title: "Download Center",
-        description: "Download raw data for your research needs.",
-        icon: Download,
-        details:
-            "Download raw Landsat data in various formats suitable for GIS software and custom analysis pipelines. Available in both georeferenced and non-georeferenced formats.",
-    },
 ];
 ---
 
@@ -89,3 +75,23 @@ const dataCategories = [
     }
 </style>
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const categoryCards = document.querySelectorAll(".category-card");
+        const categoryDetails = document.querySelectorAll(".category-details");
+
+        categoryCards.forEach((card, index) => {
+            card.addEventListener("click", () => {
+                // Toggle the 'show' class on the corresponding details element
+                categoryDetails[index].classList.toggle("show");
+
+                // Close other open details
+                categoryDetails.forEach((detail, detailIndex) => {
+                    if (detailIndex !== index) {
+                        detail.classList.remove("show");
+                    }
+                });
+            });
+        });
+    });
+</script>

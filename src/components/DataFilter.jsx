@@ -65,42 +65,41 @@ export default function DataFilter() {
     minHistoricalDate.setDate(minHistoricalDate.getDate() - 16);
 
     return (
-        <div className="min-h-screen text-white p-8">
+        <div className="mb-28 text-white p-8">
             <div className="max-w-4xl mx-auto bg-black bg-opacity-60 rounded-lg shadow-lg p-8 backdrop-blur-sm">
-                <h2 className="text-3xl font-bold mb-6 text-center">Landsat Data Filter</h2>
+                <h2 className="text-3xl font-bold mb-8 text-center">Landsat Data Filter</h2>
 
-                <div className="space-y-8">
+                <div className="space-y-12">
                     {/* Data Type Selection */}
-                    <div>
-                        <h3 className="text-lg font-semibold mb-4 flex items-center">
-                            <Satellite className="mr-2 text-blue-500" /> Select Data Types
+                    <div className="text-center">
+                        <h3 className="text-lg font-semibold mb-4 flex items-center justify-center text-white">
+                            <Satellite className="mr-2 text-blue-400" /> Select Data Types
                         </h3>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="inline-grid grid-cols-3 gap-4">
                             {Object.keys(selectedData).map((dataType, index) => (
                                 <label
                                     key={index}
-                                    className="flex items-center bg-white shadow-md rounded-md p-2 space-x-2 cursor-pointer hover:shadow-lg transition-shadow duration-200"
+                                    className="flex items-center bg-gray-800 bg-opacity-60 shadow-md rounded-md p-3 space-x-3 cursor-pointer hover:shadow-lg transition-shadow duration-200"
                                 >
                                     <input
                                         type="checkbox"
                                         name={dataType}
                                         checked={selectedData[dataType]}
                                         onChange={handleCheckboxChange}
-                                        className="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring focus:ring-blue-200"
+                                        className="form-checkbox h-5 w-5 text-blue-400 rounded border-gray-600 focus:ring focus:ring-blue-200"
                                     />
-                                    <span className="text-gray-700 text-sm">Data {index + 1}</span>
+                                    <span className="text-gray-300 text-sm">Data {index + 1}</span>
                                 </label>
                             ))}
                         </div>
                     </div>
 
-
                     {/* Cloud Coverage */}
-                    <div>
-                        <h3 className="text-xl font-semibold mb-4 flex items-center">
+                    <div className="text-center">
+                        <h3 className="text-xl font-semibold mb-4 flex justify-center items-center">
                             <CloudQueue className="mr-2" /> Cloud Coverage
                         </h3>
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center justify-center space-x-4 max-w-md mx-auto">
                             <input
                                 type="range"
                                 min="0"
@@ -114,8 +113,8 @@ export default function DataFilter() {
                     </div>
 
                     {/* Historical/Live Toggle */}
-                    <div>
-                        <h3 className="text-xl font-semibold mb-4 ">Data Mode</h3>
+                    <div className="text-center">
+                        <h3 className="text-xl font-semibold mb-4">Data Mode</h3>
                         <div className="flex justify-center space-x-4">
                             <button
                                 onClick={() => handleFilterChange('historical')}
@@ -132,14 +131,13 @@ export default function DataFilter() {
                                 <span>Live</span>
                             </button>
                         </div>
-
                     </div>
 
                     {/* Historical Data Options */}
                     {filterOption === 'historical' && (
-                        <div className="space-y-4">
+                        <div className="text-center space-y-4">
                             <h3 className="text-xl font-semibold mb-4">Historical Data Options</h3>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
                                 <div>
                                     <label className="block mb-2">Start Date</label>
                                     <DatePicker
@@ -161,15 +159,14 @@ export default function DataFilter() {
                                     />
                                 </div>
                             </div>
-
                         </div>
                     )}
 
                     {/* Live Data Options */}
                     {filterOption === 'live' && (
-                        <div className="space-y-4">
+                        <div className="text-center space-y-4">
                             <h3 className="text-xl font-semibold mb-4">Live Data Options</h3>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-32 max-w-md mx-auto">
                                 <div>
                                     <label className="block mb-2">Notification Delay</label>
                                     <select
@@ -185,8 +182,7 @@ export default function DataFilter() {
                                 </div>
                                 <div>
                                     <label className="block mb-4">Notification Type</label>
-
-                                    <div className="flex items-center gap-5">
+                                    <div className="flex items-center justify-center gap-5">
                                         <label className="flex items-center space-x-2 cursor-pointer">
                                             <input
                                                 type="radio"
@@ -199,7 +195,6 @@ export default function DataFilter() {
                                                 <Notifications className="mr-2" /> Browser
                                             </span>
                                         </label>
-
                                         <label className="flex items-center space-x-2 cursor-pointer">
                                             <input
                                                 type="radio"
@@ -214,11 +209,10 @@ export default function DataFilter() {
                                         </label>
                                     </div>
                                 </div>
-
                             </div>
 
                             {notificationType === 'email' && (
-                                <div>
+                                <div className="max-w-md mx-auto">
                                     <label htmlFor="email" className="block mb-2">Email Address</label>
                                     <input
                                         type="email"
@@ -235,9 +229,9 @@ export default function DataFilter() {
                     )}
 
                     {/* Satellite Selection */}
-                    <div className="space-y-4">
+                    <div className="text-center space-y-4">
                         <h3 className="text-xl font-semibold mb-4">Select Satellites</h3>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="inline-grid grid-cols-2 gap-4">
                             <label className="flex items-center space-x-2 cursor-pointer">
                                 <input
                                     type="checkbox"

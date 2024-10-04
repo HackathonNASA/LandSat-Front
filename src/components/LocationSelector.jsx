@@ -250,7 +250,7 @@ export default function LocationSelector() {
                                 </button>
                             )}
 
-                            <hr className="my-4"/>
+                            <hr className="my-4" />
 
                             <button
                                 type="button"
@@ -273,8 +273,8 @@ export default function LocationSelector() {
                         <div
                             className="h-[350px] bg-gray-600 rounded-lg overflow-hidden relative"> {/* Add relative positioning here */}
                             <Canvas>
-                                <ambientLight intensity={1.5}/>
-                                <pointLight position={[10, 10, 10]}/>
+                                <ambientLight intensity={1.5} />
+                                <pointLight position={[10, 10, 10]} />
                                 <Suspense fallback={null}>
                                     <mesh
                                         onPointerDown={handleEarthPointerDown}
@@ -282,11 +282,11 @@ export default function LocationSelector() {
                                         onPointerUp={handleEarthPointerUp}
                                         scale={[scale, scale, scale]}
                                     >
-                                        <sphereGeometry args={[1, 64, 64]}/>
-                                        <meshStandardMaterial map={texture}/>
+                                        <sphereGeometry args={[1, 64, 64]} />
+                                        <meshStandardMaterial map={texture} />
                                     </mesh>
                                     <mesh scale={[scale, scale, scale]}>
-                                        <sphereGeometry args={[1, 64, 64]}/>
+                                        <sphereGeometry args={[1, 64, 64]} />
                                         <meshPhongMaterial
                                             map={textureCloud}
                                             transparent={true}
@@ -298,8 +298,8 @@ export default function LocationSelector() {
                                     {pins.map((pin, index) => (
                                         <React.Fragment key={index}>
                                             <mesh position={pin.position.clone().multiplyScalar(scale)}>
-                                                <sphereGeometry args={[0.005 * scale, 16, 16]}/>
-                                                <meshBasicMaterial color="red"/>
+                                                <sphereGeometry args={[0.005 * scale, 16, 16]} />
+                                                <meshBasicMaterial color="red" />
                                             </mesh>
                                             <Html position={pin.position.clone().multiplyScalar(scale)}>
                                                 <div style={{
@@ -316,7 +316,7 @@ export default function LocationSelector() {
                                         </React.Fragment>
                                     ))}
                                 </Suspense>
-                                <OrbitControls enableZoom={true} minDistance={2} maxDistance={4}/>
+                                <OrbitControls enableZoom={true} minDistance={2} maxDistance={4} />
                             </Canvas>
                             {/* Zoom buttons */}
                             <div className="absolute bottom-4 right-4 flex flex-col space-y-2">

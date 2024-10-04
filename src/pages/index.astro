@@ -9,18 +9,18 @@ import Contact from "./sections/contact.astro"; // Import your Contact section
 import Tool from "./sections/tool.astro"; // Import your Gallery section
 import News from "./sections/news.astro"; // Import your News section
 ---
+
 <Layout title="Landsat Tracker">
   <Navbar />
 
   <!-- Full background Scene -->
   <div class="fixed inset-0 z-0">
-    <Scene client:only="react" /> <!-- Full background Scene component -->
+    <Scene client:only="react" />
   </div>
 
-
-  <main class="relative z-10 flex flex-col mt-[60px]">
+  <main class="relative z-10 flex flex-col">
     <!-- Home Section -->
-    <section id="home" class="relative py-8">
+    <section id="home" class="relative min-h-screen flex items-center">
       <Home />
     </section>
 
@@ -33,8 +33,6 @@ import News from "./sections/news.astro"; // Import your News section
     <section id="tool" class="relative py-8">
       <Tool />
     </section>
-
-
 
     <!-- About Section -->
     <section id="about" class="relative py-8">
