@@ -3,10 +3,7 @@ import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
-import EarthBackground from './EarthBackground.jsx';
-
 export default function LocationSelector() {
-    const [activeTab, setActiveTab] = useState('track');
     const [locationType, setLocationType] = useState("coordinates");
     const [inputLat, setInputLat] = useState('');
     const [inputLng, setInputLng] = useState('');
@@ -120,7 +117,7 @@ export default function LocationSelector() {
             <div className="container mx-auto px-4">
                 <div className="flex flex-wrap">
                     <div className="w-full lg:w-1/2 pr-4">
-                        <h2 className="text-2xl font-bold mb-2">Landsat</h2>
+                        <h2 className="text-2xl font-bold mb-2">Location</h2>
                         <form onSubmit={handleTrackSubmit} className="space-y-6">
                             <div>
                                 <p className="font-bold mb-2">Define Target Location</p>
@@ -298,7 +295,7 @@ export default function LocationSelector() {
                                         </React.Fragment>
                                     ))}
                                 </Suspense>
-                                <OrbitControls enableZoom={true} />
+                                <OrbitControls enableZoom={true} minDistance={2} maxDistance={4} /> {/* Set your desired min/max distances */}
                             </Canvas>
                         </div>
                     </div>

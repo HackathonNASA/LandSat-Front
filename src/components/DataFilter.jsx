@@ -20,8 +20,8 @@ const DataFilter = () => {
     };
 
     return (
-        <div className="my-1">
-            <h3 className="text-lg font-semibold mb-2">Filter</h3>
+        <div className="relative z-10 py-4"> {/* Adjusted to match the layout */}
+            <h3 className="text-2xl font-bold mb-2">Filter</h3> {/* Adjusted heading size */}
             <p className="mb-2">
                 Switch to live in order to get notifications and results for a Landsat passing by a specific location.
             </p>
