@@ -43,6 +43,7 @@ export default function LocationSelector() {
         }
     };
 
+
     const handleTrackSubmit = (e) => {
         e.preventDefault();
         if (locationType === 'coordinates') {
