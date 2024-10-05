@@ -53,6 +53,16 @@ export default function DataFilter({ isButtonEnabled, pins }) {
     });
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const handleSelectAll = (prefix, dataTypes) => {
+        const allSelected = dataTypes.every((dataType) => selectedData[dataType]);
+        const newSelectedData = { ...selectedData };
+
+        dataTypes.forEach((dataType) => {
+            newSelectedData[dataType] = !allSelected; // Selecciona/deselecciona todas las propiedades
+        });
+
+        setSelectedData(newSelectedData);
+    };
     const [selectedSatellites, setSelectedSatellites] = useState({
         landsat8: false,
         landsat9: false,
@@ -198,7 +208,15 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                         <div className="flex flex-wrap justify-center gap-4">
                             {Object.entries(groupedData).map(([prefix, dataTypes]) => (
                                 <div key={prefix} className="bg-gray-800 bg-opacity-60 rounded-lg p-4 w-64">
-                                    <h4 className="text-lg font-semibold mb-2">{prefix.replace(/_/g, ' ')} Values</h4>
+                                    <label className="flex items-center justify-center mb-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={dataTypes.every((dataType) => selectedData[dataType])}
+                                            onChange={() => handleSelectAll(prefix, dataTypes)}
+                                            className="form-checkbox h-5 w-5 text-blue-400 rounded border-gray-600"
+                                        />
+                                        <span className="text-lg font-semibold ml-2">{prefix.replace(/_/g, ' ')} Values</span>
+                                    </label>
                                     <div className="h-48 overflow-y-auto">
                                         {dataTypes.map((dataType) => (
                                             <label key={dataType} className="flex items-center space-x-2 mb-2">
