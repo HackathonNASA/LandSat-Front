@@ -1,5 +1,41 @@
 import { useState } from 'react';
 import { Satellite, Search, Info, Loader2, Download, Globe } from 'lucide-react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+const generatePDF = (results) => {
+    const doc = new jsPDF();
+
+    // Definir márgenes y configuraciones generales
+    const margin = 20;
+    const imgWidth = 50; // Ancho de la imagen
+    const imgHeight = 50; // Alto de la imagen
+    const textIndent = margin + imgWidth + 10; // Espaciado para el texto al lado de la imagen
+
+    // Título del documento
+    doc.setFontSize(18);
+    doc.text("Landsat", margin, 20);
+
+    // Recorrer las imágenes y descripciones
+    results.images.forEach((image, index) => {
+        const yPosition = 40 + index * 60; // Espaciado entre cada sección
+
+        // Cargar la imagen
+        doc.addImage(image.url, 'JPEG', margin, yPosition, imgWidth, imgHeight);
+
+        // Añadir las descripciones
+        doc.setFontSize(12);
+        doc.text(`Descripciones:`, textIndent, yPosition);
+
+        // Añadir la lista de descripciones
+        image.datos.forEach((dato, i) => {
+            doc.text(`${i + 1}. ${dato}`, textIndent, yPosition + (i + 1) * 10);
+        });
+    });
+
+    // Guardar o mostrar el PDF generado
+    doc.save("landsat_results.pdf");
+};
 
 export default function ResultsDisplay() {
     const [token, setToken] = useState('');
