@@ -95,6 +95,8 @@ export default function DataFilter() {
             }
         });
 
+
+
         if (filterOption === 'historical') {
             // Add historical specific data
             formData.append('startDate', startDate.toISOString());
@@ -106,6 +108,14 @@ export default function DataFilter() {
             if (notificationType === 'email') {
                 formData.append('email', email);
             }
+        }
+
+        // Get pins string and append to formData
+        const pinsString = await LocationSelector.getPins();
+        formData.append('pins', pinsString);
+
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
         }
 
         try {
@@ -120,7 +130,6 @@ export default function DataFilter() {
                 setFormStatus('Filters applied successfully!');
                 setErrorDetails('');
                 e.target.reset();
-                LocationSelector.sendPins();
             } else {
                 throw new Error(data.message || 'Server response was not ok.');
             }
