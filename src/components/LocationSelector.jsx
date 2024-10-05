@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -21,11 +21,9 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
     const minScale = 1.5;
     const maxScale = 3.0;
 
-    const getPins = async () => {
-        const pinsString = JSON.stringify(pins);
-        console.log('Sending pins:', pinsString);
-        return pinsString;
-    };
+    useEffect(() => {
+        console.log('Pins:', pins);
+    }, [pins]);
 
     const handleEarthPointerDown = () => {
         setIsDragging(false);

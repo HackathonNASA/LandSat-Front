@@ -108,8 +108,9 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                 formData.append('email', email);
             }
         }
-
-        formData.append('pins', pins.toISOString);
+        if(pins.length >0){
+            formData.append('pins', JSON.stringify(pins, null, 2));
+        }
 
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
