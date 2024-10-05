@@ -96,14 +96,14 @@ export default function ResultsDisplay() {
                         {results.images.map((image) => (
                             <div
                                 key={image.id}
-                                className="relative group cursor-pointer overflow-hidden bg-gray-800 border border-blue-500 rounded-lg"
+                                className="relative group cursor-pointer overflow-hidden bg-gray-800 border border-blue-500 rounded-lg h-64" // Fixed height for uniformity
                                 onClick={() => setSelectedImage(image)}  // Click to set selected image
                             >
                                 {/* Only the image is rendered in the grid */}
                                 <img
                                     src={image.url}
                                     alt={image.title}
-                                    className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-110"
+                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                                 />
                             </div>
                         ))}
@@ -111,6 +111,13 @@ export default function ResultsDisplay() {
 
                     {/* Preview section with all image details */}
                     <div className="bg-gray-800 border border-blue-500 rounded-lg p-4 space-y-4">
+                        {/* Mostrar la imagen seleccionada */}
+                        <img
+                            src={selectedImage.url}
+                            alt={selectedImage.title}
+                            className="w-full h-auto object-cover rounded-lg mb-4" // Ajusta el tamaño y el estilo
+                        />
+
                         <h4 className="text-xl font-semibold flex items-center space-x-2 text-blue-300">
                             <Info className="w-5 h-5" />
                             <span>{selectedImage.title}</span>
@@ -124,6 +131,7 @@ export default function ResultsDisplay() {
                             ))}
                         </div>
                     </div>
+
                 </div>
 
                 {/* Download button */}
