@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function DataFilter() {
+    const filterUrl = 'http://localhost:4321/api/apply-filters';
     const [filterOption, setFilterOption] = useState('live');
     const [cloudCoverage, setCloudCoverage] = useState(50);
     const [selectedData, setSelectedData] = useState({
@@ -76,7 +77,7 @@ export default function DataFilter() {
     const minHistoricalDate = new Date(maxHistoricalDate);
     minHistoricalDate.setDate(minHistoricalDate.getDate() - 16);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
@@ -106,14 +107,26 @@ export default function DataFilter() {
             }
         }
 
-        // Print out the formData object for demonstration purposes
-        for (let pair of formData.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
-        }
+        try {
+            const response = await fetch(filterUrl, {
+                method: 'POST',
+                body: formData,
+            });
 
-        // Here, you can now send this `formData` using fetch or any other method.
-        // Example:
-        // fetch('/api/filter', { method: 'POST', body: formData });
+            const data = await response.json();
+
+            if (response.ok) {
+                setFormStatus('Filters applied successfully!');
+                setErrorDetails('');
+                e.target.reset();
+            } else {
+                throw new Error(data.message || 'Server response was not ok.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setFormStatus('There was an error applying the filters. Please try again.');
+            setErrorDetails(error.message || 'Unknown error occurred');
+        }
     };
 
     const groupedData = Object.keys(selectedData).reduce((acc, key) => {
