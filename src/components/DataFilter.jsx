@@ -9,6 +9,27 @@ export default function DataFilter({ isButtonEnabled, pins }) {
     const [filterOption, setFilterOption] = useState('live');
     const [cloudCoverage, setCloudCoverage] = useState(50);
     const [isButtonEnabled2, setIsButtonEnabled2] = useState(false);
+    const dataTypeDescriptions = {
+        QA_PIXEL: "Quality of pixels",
+        QA_RADSAT: "Radiative interference",
+        SR_B1: "Ultraviolet band",
+        SR_B2: "Blue band",
+        SR_B3: "Green band",
+        SR_B4: "Red band",
+        SR_B5: "Near infrared band",
+        SR_B6: "Thermal infrared band",
+        SR_B7: "Mineral infrared band",
+        SR_QA_AEROSOL: "Air quality",
+        ST_ATRAN: "Atmospheric transmittance",
+        ST_B10: "Surface temperature",
+        ST_CDIST: "Distance to clouds",
+        ST_DRAD: "Direct radiation",
+        ST_EMIS: "Thermal emission",
+        ST_EMSD: "Standard error of emission",
+        ST_QA: "Thermal quality",
+        ST_TRAD: "Thermal radiation",
+        ST_URAD: "Diffuse radiation"
+    };
     const [selectedData, setSelectedData] = useState({
         QA_PIXEL: false,
         QA_RADSAT: false,
@@ -177,18 +198,18 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                         <div className="flex flex-wrap justify-center gap-4">
                             {Object.entries(groupedData).map(([prefix, dataTypes]) => (
                                 <div key={prefix} className="bg-gray-800 bg-opacity-60 rounded-lg p-4 w-64">
-                                    <h4 className="text-lg font-semibold mb-2">{prefix}_ Values</h4>
+                                    <h4 className="text-lg font-semibold mb-2">{prefix.replace(/_/g, ' ')} Values</h4>
                                     <div className="h-48 overflow-y-auto">
                                         {dataTypes.map((dataType) => (
                                             <label key={dataType} className="flex items-center space-x-2 mb-2">
                                                 <input
                                                     type="checkbox"
                                                     name={dataType}
-                                                    checked={selectedData[dataType]}
-                                                    onChange={handleCheckboxChange}
-                                                    className="form-checkbox h-5 w-5 text-blue-400 rounded border-gray-600 focus:ring focus:ring-blue-200"
+                                                    checked={selectedData[dataType]} // Controla el estado del checkbox
+                                                    onChange={handleCheckboxChange} // Maneja el cambio
+                                                    className="form-checkbox h-5 w-5 text-blue-400 rounded border-gray-600"
                                                 />
-                                                <span className="text-gray-300 text-sm">{dataType}</span>
+                                                <span className="text-gray-300 text-sm">{dataTypeDescriptions[dataType]}</span>
                                             </label>
                                         ))}
                                     </div>
@@ -217,7 +238,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
 
                     {/* Historical/Live Toggle */}
                     <div className="text-center">
-                        <h3 className="text-xl font-semibold mb-4 flex items-center">
+                        <h3 className="text-xl font-semibold mb-4 justify-center flex items-center">
                             <SettingsIcon className="mr-2" /> Mode
                         </h3>
                         <div className="flex justify-center space-x-4">
