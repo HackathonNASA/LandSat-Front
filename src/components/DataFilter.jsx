@@ -179,7 +179,6 @@ export default function DataFilter({ isButtonEnabled, pins }) {
             }
         } catch (error) {
             console.error('Error:', error);
-            setFormStatus('There was an error applying the filters. Please try again.');
             setErrorDetails(error.message || 'Unknown error occurred');
         }
     };

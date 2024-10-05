@@ -40,7 +40,7 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
             const theta = Math.atan2(point.z, point.x);
             const lat = 90 - (phi * 180) / Math.PI;
             const lng = (theta * 180) / Math.PI;
-            const pinDistance = 1.02;
+            const pinDistance = 1.005;
             setPins([{ lat, lng, position: point.clone().multiplyScalar(pinDistance) }]);
             setIsButtonEnabled(true);
         }
@@ -58,45 +58,63 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
     const handleAddPinGeo = (latitude, longitude) => {
         const lat = parseFloat(latitude);
         const lng = parseFloat(longitude);
+
+        // Validar las coordenadas
         if (isNaN(lat) || isNaN(lng)) {
             alert('Por favor, ingresa coordenadas válidas');
             return;
         }
 
+        // Calcular la posición en 3D para el pin
         const phi = (90 - lat) * (Math.PI / 180);
         const theta = lng * (Math.PI / 180);
         const x = Math.sin(phi) * Math.cos(theta);
         const y = Math.cos(phi);
         const z = Math.sin(phi) * Math.sin(theta);
-        const pinDistance = 1.02;
+        const pinDistance = 1.005; // Distancia desde el centro de la Tierra
+
+        // Crear la posición del pin en el espacio 3D
+        const pinPosition = new THREE.Vector3(x, y, z).normalize().multiplyScalar(pinDistance);
 
         setIsButtonEnabled(true);
 
-        setPins([{ lat, lng, position: point.clone().multiplyScalar(pinDistance) }]);
+        // Agregar el pin a la lista de pines
+        setPins([{ lat, lng, position: pinPosition }]);
+
     };
 
-    const handleAddPin = () => {
+
+    const handleAddPin = (event) => { // Asegúrate de que 'event' se pase como argumento
         const lat = parseFloat(inputLat);
         const lng = parseFloat(inputLng);
+
+        // Validar las coordenadas
         if (isNaN(lat) || isNaN(lng)) {
             alert('Por favor, ingresa coordenadas válidas');
             return;
         }
 
+        // Calcular la posición en 3D para el pin
         const phi = (90 - lat) * (Math.PI / 180);
         const theta = lng * (Math.PI / 180);
         const x = Math.sin(phi) * Math.cos(theta);
         const y = Math.cos(phi);
         const z = Math.sin(phi) * Math.sin(theta);
-        const pinDistance = 1.02;
+        const pinDistance = 1.005; // Distancia desde el centro de la Tierra
+
+        // Crear la posición del pin en el espacio 3D
+        const pinPosition = new THREE.Vector3(x, y, z).normalize().multiplyScalar(pinDistance);
 
         setIsButtonEnabled(true);
 
-        setPins([{ lat, lng, position: point.clone().multiplyScalar(pinDistance) }]);
+        // Agregar el pin a la lista de pines, manteniendo los existentes
+        setPins([{ lat, lng, position: pinPosition }]);
 
+        // Limpiar los inputs
         setInputLat('');
         setInputLng('');
     };
+
 
     const handleGeolocation = () => {
         if ("geolocation" in navigator) {
@@ -296,8 +314,8 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
                                     {pins.map((pin, index) => (
                                         <React.Fragment key={index}>
                                             <mesh position={pin.position.clone().multiplyScalar(scale)}>
-                                                <sphereGeometry args={[0.005 * scale, 16, 16]} />
-                                                <meshBasicMaterial color="white" />
+                                                <sphereGeometry args={[0.01 * scale, 16, 16]} />
+                                                <meshBasicMaterial color="red" />
                                             </mesh>
                                             <Html position={pin.position.clone().multiplyScalar(scale)}>
                                                 <div style={{
