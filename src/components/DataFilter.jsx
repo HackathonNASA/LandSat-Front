@@ -225,6 +225,7 @@ export default function DataFilter() {
                                     <DatePicker
                                         selected={startDate}
                                         onChange={(date) => setStartDate(date)}
+                                        dateFormat="dd/MM/yyyy"  // Día/mes/año
                                         maxDate={maxHistoricalDate}
                                         minDate={minHistoricalDate}
                                         className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
@@ -235,6 +236,7 @@ export default function DataFilter() {
                                     <DatePicker
                                         selected={endDate}
                                         onChange={(date) => setEndDate(date)}
+                                        dateFormat="dd/MM/yyyy"  // Día/mes/año
                                         maxDate={new Date()}
                                         minDate={startDate}
                                         className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
