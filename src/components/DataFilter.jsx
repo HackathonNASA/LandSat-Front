@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Satellite } from '@mui/icons-material';
+import { Satellite, CloudQueue, History, PlayArrow, Notifications, Email } from '@mui/icons-material';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -49,7 +49,7 @@ export default function DataFilter() {
 
     const handleFilterChange = (option) => {
         setFilterOption(option);
-        setEmail(''); // Clear email field if switching to live option
+        setEmail('');
     };
 
     const handleCheckboxChange = (e) => {
@@ -61,7 +61,7 @@ export default function DataFilter() {
     };
 
     const handleCloudCoverageChange = (e) => {
-        setCloudCoverage(Number(e.target.value)); // Parse value as number
+        setCloudCoverage(e.target.value);
     };
 
     const handleSatelliteChange = (e) => {
@@ -71,6 +71,10 @@ export default function DataFilter() {
             [name]: checked,
         }));
     };
+
+    const maxHistoricalDate = new Date();
+    const minHistoricalDate = new Date(maxHistoricalDate);
+    minHistoricalDate.setDate(minHistoricalDate.getDate() - 16);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -112,229 +116,223 @@ export default function DataFilter() {
         // fetch('/api/filter', { method: 'POST', body: formData });
     };
 
-    const maxHistoricalDate = new Date();
-    const minHistoricalDate = new Date(maxHistoricalDate);
-    minHistoricalDate.setDate(minHistoricalDate.getDate() - 16);
+    const groupedData = Object.keys(selectedData).reduce((acc, key) => {
+        const prefix = key.split('_')[0];
+        if (!acc[prefix]) {
+            acc[prefix] = [];
+        }
+        acc[prefix].push(key);
+        return acc;
+    }, {});
 
     return (
-        <form onSubmit={handleSubmit} className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
-            <div className="max-w-4xl mx-auto bg-gray-800 bg-opacity-80 rounded-xl shadow-2xl p-8 backdrop-blur-sm">
-                <h2 className="text-4xl font-bold mb-10 text-center text-white">Landsat Data Filter</h2>
+        <div className="mb-28 text-white p-8">
+            <div className="max-w-4xl mx-auto bg-black bg-opacity-60 rounded-lg shadow-lg p-8 backdrop-blur-sm">
+                <h2 className="text-3xl font-bold mb-8 text-center">Landsat Data Filter</h2>
 
-                <div className="space-y-12">
+                <form onSubmit={handleSubmit} className="space-y-12">
                     {/* Data Type Selection */}
-                    <div className="p-6 rounded-lg">
-                        <h3 className="text-xl font-semibold mb-6 flex items-center justify-center text-white">
-                            <Satellite className="mr-2 text-white" /> Select Data Types
+                    <div className="text-center">
+                        <h3 className="text-lg font-semibold mb-4 flex items-center justify-center text-white">
+                            <Satellite className="mr-2 text-blue-400" /> Select Data Types
                         </h3>
-                        <div className="flex flex-wrap -mx-2">
-                            {/* Checkbox items */}
-                            <div className="w-full sm:w-1/2 px-2 mb-4">
-                                <label className="flex items-center bg-gray-600 bg-opacity-60 shadow-md rounded-md p-4 space-x-3 cursor-pointer hover:bg-opacity-70 transition-all duration-200 h-full">
-                                    <input
-                                        type="checkbox"
-                                        name="QA_PIXEL"
-                                        checked={selectedData['QA_PIXEL']}
-                                        onChange={handleCheckboxChange}
-                                        className="form-checkbox h-5 w-5 text-white rounded border-gray-400 focus:ring-2 focus:ring-blue-400"
-                                    />
-                                    <span className="text-gray-200 text-sm">QA_PIXEL</span>
-                                </label>
-                            </div>
-                            <div className="w-full sm:w-1/2 px-2 mb-4">
-                                <label className="flex items-center bg-gray-600 bg-opacity-60 shadow-md rounded-md p-4 space-x-3 cursor-pointer hover:bg-opacity-70 transition-all duration-200 h-full">
-                                    <input
-                                        type="checkbox"
-                                        name="QA_RADSAT"
-                                        checked={selectedData['QA_RADSAT']}
-                                        onChange={handleCheckboxChange}
-                                        className="form-checkbox h-5 w-5 text-white rounded border-gray-400 focus:ring-2 focus:ring-blue-400"
-                                    />
-                                    <span className="text-gray-200 text-sm">QA_RADSAT</span>
-                                </label>
-                            </div>
-
-                            {/* SR_ Bands (Multiple Select Dropdown) */}
-                            <div className="w-full sm:w-1/2 px-2 mb-4">
-                                <div className="bg-gray-600 bg-opacity-60 shadow-md rounded-md p-4 h-full">
-                                    <label className="text-gray-200 text-sm mb-2 block">Select SR_ Bands</label>
-                                    <select
-                                        multiple
-                                        value={Object.keys(selectedData).filter(key => key.startsWith('SR_') && selectedData[key])}
-                                        onChange={(e) => {
-                                            const options = e.target.options;
-                                            const selectedOptions = {};
-                                            for (let i = 0; i < options.length; i++) {
-                                                selectedOptions[options[i].value] = options[i].selected;
-                                            }
-                                            setSelectedData((prevState) => ({ ...prevState, ...selectedOptions }));
-                                        }}
-                                        className="w-full bg-gray-700 text-gray-200 rounded p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                    >
-                                        <option value="SR_B1">SR_B1 (Banda 1)</option>
-                                        <option value="SR_B2">SR_B2 (Banda 2)</option>
-                                        <option value="SR_B3">SR_B3 (Banda 3)</option>
-                                        <option value="SR_B4">SR_B4 (Banda 4)</option>
-                                        <option value="SR_B5">SR_B5 (Banda 5)</option>
-                                        <option value="SR_B6">SR_B6 (Banda 6)</option>
-                                        <option value="SR_B7">SR_B7 (Banda 7)</option>
-                                        <option value="SR_QA_AEROSOL">SR_QA_AEROSOL</option>
-                                    </select>
+                        <div className="flex flex-wrap justify-center gap-4">
+                            {Object.entries(groupedData).map(([prefix, dataTypes]) => (
+                                <div key={prefix} className="bg-gray-800 bg-opacity-60 rounded-lg p-4 w-64">
+                                    <h4 className="text-lg font-semibold mb-2">Select {prefix}_ Values</h4>
+                                    <div className="h-48 overflow-y-auto">
+                                        {dataTypes.map((dataType) => (
+                                            <label key={dataType} className="flex items-center space-x-2 mb-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name={dataType}
+                                                    checked={selectedData[dataType]}
+                                                    onChange={handleCheckboxChange}
+                                                    className="form-checkbox h-5 w-5 text-blue-400 rounded border-gray-600 focus:ring focus:ring-blue-200"
+                                                />
+                                                <span className="text-gray-300 text-sm">{dataType}</span>
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-
-                            {/* ST_ Values (Multiple Select Dropdown) */}
-                            <div className="w-full sm:w-1/2 px-2 mb-4">
-                                <div className="bg-gray-600 bg-opacity-60 shadow-md rounded-md p-4 h-full">
-                                    <label className="text-gray-200 text-sm mb-2 block">Select ST_ Values</label>
-                                    <select
-                                        multiple
-                                        value={Object.keys(selectedData).filter(key => key.startsWith('ST_') && selectedData[key])}
-                                        onChange={(e) => {
-                                            const options = e.target.options;
-                                            const selectedOptions = {};
-                                            for (let i = 0; i < options.length; i++) {
-                                                selectedOptions[options[i].value] = options[i].selected;
-                                            }
-                                            setSelectedData((prevState) => ({ ...prevState, ...selectedOptions }));
-                                        }}
-                                        className="w-full bg-gray-700 text-gray-200 rounded p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                    >
-                                        <option value="ST_ATRAN">ST_ATRAN</option>
-                                        <option value="ST_B10">ST_B10</option>
-                                        <option value="ST_CDIST">ST_CDIST</option>
-                                        <option value="ST_DRAD">ST_DRAD</option>
-                                        <option value="ST_EMIS">ST_EMIS</option>
-                                        <option value="ST_EMSD">ST_EMSD</option>
-                                        <option value="ST_QA">ST_QA</option>
-                                        <option value="ST_TRAD">ST_TRAD</option>
-                                        <option value="ST_URAD">ST_URAD</option>
-                                    </select>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
 
                     {/* Cloud Coverage */}
-                    <div className="bg-gray-700 bg-opacity-50 p-6 rounded-lg">
-                        <h3 className="text-xl font-semibold mb-6 text-white">Cloud Coverage (%)</h3>
-                        <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            value={cloudCoverage}
-                            onChange={handleCloudCoverageChange}
-                            className="w-full h-2 bg-blue-300 rounded-lg appearance-none cursor-pointer"
-                        />
-                        <div className="text-center text-gray-200 mt-2">
-                            {cloudCoverage}%
+                    <div className="text-center">
+                        <h3 className="text-xl font-semibold mb-4 flex justify-center items-center">
+                            <CloudQueue className="mr-2" /> Cloud Coverage
+                        </h3>
+                        <div className="flex items-center justify-center space-x-4 max-w-md mx-auto">
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={cloudCoverage}
+                                onChange={handleCloudCoverageChange}
+                                className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
+                            />
+                            <span className="text-lg font-semibold">{cloudCoverage}%</span>
                         </div>
                     </div>
 
-                    {/* Date and Satellite Selection */}
-                    {filterOption === 'historical' ? (
-                        <div className="bg-gray-700 bg-opacity-50 p-6 rounded-lg">
-                            <h3 className="text-xl font-semibold mb-6 text-white">Select Date Range</h3>
-                            <div className="flex justify-between space-x-4">
-                                <div className="w-full">
-                                    <label className="text-gray-200 block mb-2">Start Date</label>
+                    {/* Historical/Live Toggle */}
+                    <div className="text-center">
+                        <h3 className="text-xl font-semibold mb-4">Data Mode</h3>
+                        <div className="flex justify-center space-x-4">
+                            <button
+                                type="button"
+                                onClick={() => handleFilterChange('historical')}
+                                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors duration-200 ${filterOption === 'historical' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                            >
+                                <History />
+                                <span>Historical</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => handleFilterChange('live')}
+                                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors duration-200 ${filterOption === 'live' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                            >
+                                <Notifications />
+                                <span>Live</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Historical Data Options */}
+                    {filterOption === 'historical' && (
+                        <div className="text-center space-y-4">
+                            <h3 className="text-xl font-semibold mb-4">Historical Data Options</h3>
+                            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                                <div>
+                                    <label className="block mb-2">Start Date</label>
                                     <DatePicker
                                         selected={startDate}
-                                        onChange={setStartDate}
-                                        selectsStart
-                                        startDate={startDate}
-                                        endDate={endDate}
+                                        onChange={(date) => setStartDate(date)}
                                         maxDate={maxHistoricalDate}
                                         minDate={minHistoricalDate}
-                                        className="w-full bg-gray-700 text-gray-200 rounded p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
                                     />
                                 </div>
-                                <div className="w-full">
-                                    <label className="text-gray-200 block mb-2">End Date</label>
+                                <div>
+                                    <label className="block mb-2">End Date</label>
                                     <DatePicker
                                         selected={endDate}
-                                        onChange={setEndDate}
-                                        selectsEnd
-                                        startDate={startDate}
-                                        endDate={endDate}
-                                        maxDate={maxHistoricalDate}
+                                        onChange={(date) => setEndDate(date)}
+                                        maxDate={new Date()}
                                         minDate={startDate}
-                                        className="w-full bg-gray-700 text-gray-200 rounded p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
                                     />
                                 </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="bg-gray-700 bg-opacity-50 p-6 rounded-lg">
-                            <h3 className="text-xl font-semibold mb-6 text-blue-300">Select Notification Options</h3>
-                            <div className="flex justify-between space-x-4">
-                                <div className="w-full">
-                                    <label className="text-gray-200 block mb-2">Notification Type</label>
-                                    <select
-                                        value={notificationType}
-                                        onChange={(e) => setNotificationType(e.target.value)}
-                                        className="w-full bg-gray-700 text-gray-200 rounded p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                    >
-                                        <option value="browser">Browser Notification</option>
-                                        <option value="email">Email Notification</option>
-                                    </select>
-                                </div>
-                                {notificationType === 'email' && (
-                                    <div className="w-full">
-                                        <label className="text-gray-200 block mb-2">Email Address</label>
-                                        <input
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full bg-gray-700 text-gray-200 rounded p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                        />
-                                    </div>
-                                )}
                             </div>
                         </div>
                     )}
 
+                    {/* Live Data Options */}
+                    {filterOption === 'live' && (
+                        <div className="text-center space-y-4">
+                            <h3 className="text-xl font-semibold mb-4">Live Data Options</h3>
+                            <div className="grid grid-cols-2 gap-32 max-w-md mx-auto">
+                                <div>
+                                    <label className="block mb-2">Notification Delay</label>
+                                    <select
+                                        value={notificationDelay}
+                                        onChange={(e) => setNotificationDelay(e.target.value)}
+                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
+                                    >
+                                        <option value="15min">15 minutes</option>
+                                        <option value="30min">30 minutes</option>
+                                        <option value="1h">1 hour</option>
+                                        <option value="2h">2 hours</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block mb-4">Notification Type</label>
+                                    <div className="flex items-center justify-center gap-5">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                value="browser"
+                                                checked={notificationType === 'browser'}
+                                                onChange={(e) => setNotificationType(e.target.value)}
+                                                className="form-radio h-5 w-5 text-blue-600"
+                                            />
+                                            <span className="flex items-center">
+                                                <Notifications className="mr-2" /> Browser
+                                            </span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                value="email"
+                                                checked={notificationType === 'email'}
+                                                onChange={(e) => setNotificationType(e.target.value)}
+                                                className="form-radio h-5 w-5 text-blue-600"
+                                            />
+                                            <span className="flex items-center">
+                                                <Email className="mr-2" /> Email
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {notificationType === 'email' && (
+                                <div className="max-w-md mx-auto">
+                                    <label htmlFor="email" className="block mb-2">Email Address</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="example@email.com"
+                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
+                                        required={notificationType === 'email'}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Satellite Selection */}
-                    <div className="bg-gray-700 bg-opacity-50 p-6 rounded-lg">
-                        <h3 className="text-xl font-semibold mb-6 text-blue-300">Select Satellites</h3>
-                        <div className="flex space-x-4">
-                            <div className="w-full">
-                                <label className="flex items-center bg-gray-600 bg-opacity-60 shadow-md rounded-md p-4 space-x-3 cursor-pointer hover:bg-opacity-70 transition-all duration-200 h-full">
-                                    <input
-                                        type="checkbox"
-                                        name="landsat8"
-                                        checked={selectedSatellites['landsat8']}
-                                        onChange={handleSatelliteChange}
-                                        className="form-checkbox h-5 w-5 text-blue-500 rounded border-gray-400 focus:ring-2 focus:ring-blue-400"
-                                    />
-                                    <span className="text-gray-200 text-sm">Landsat 8</span>
-                                </label>
-                            </div>
-                            <div className="w-full">
-                                <label className="flex items-center bg-gray-600 bg-opacity-60 shadow-md rounded-md p-4 space-x-3 cursor-pointer hover:bg-opacity-70 transition-all duration-200 h-full">
-                                    <input
-                                        type="checkbox"
-                                        name="landsat9"
-                                        checked={selectedSatellites['landsat9']}
-                                        onChange={handleSatelliteChange}
-                                        className="form-checkbox h-5 w-5 text-blue-500 rounded border-gray-400 focus:ring-2 focus:ring-blue-400"
-                                    />
-                                    <span className="text-gray-200 text-sm">Landsat 9</span>
-                                </label>
-                            </div>
+                    <div className="text-center space-y-4">
+                        <h3 className="text-xl font-semibold mb-4">Select Satellites</h3>
+                        <div className="inline-grid grid-cols-2 gap-4">
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="landsat8"
+                                    checked={selectedSatellites.landsat8}
+                                    onChange={handleSatelliteChange}
+                                    className="form-checkbox h-5 w-5 text-blue-600"
+                                />
+                                <span>Landsat 8</span>
+                            </label>
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="landsat9"
+                                    checked={selectedSatellites.landsat9}
+                                    onChange={handleSatelliteChange}
+                                    className="form-checkbox h-5 w-5 text-blue-600"
+                                />
+                                <span>Landsat 9</span>
+                            </label>
                         </div>
                     </div>
 
+                    {/* Submit Button */}
                     <div className="text-center">
                         <button
                             type="submit"
-                            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold rounded-md shadow-md"
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         >
-                            Apply Filters
+                            Submit
                         </button>
                     </div>
-                </div>
+                </form>
             </div>
-        </form>
+        </div>
     );
 }

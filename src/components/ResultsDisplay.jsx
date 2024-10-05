@@ -6,7 +6,6 @@ const fetchData = async (token) => {
   return {
     images: Array(9).fill(null).map((_, i) => ({
       id: i + 1,
-      url: `/placeholder.svg?height=100&width=100&text=Landsat ${i + 1}`,
       title: `Landsat Image ${i + 1}`,
       description: `Captured on ${new Date().toLocaleDateString()}. Shows ${['forests', 'urban areas', 'coastlines', 'agricultural lands', 'glaciers'][Math.floor(Math.random() * 5)]}.`,
       metadata: {
@@ -28,7 +27,6 @@ export default function ResultsDisplay() {
   const [results, setResults] = useState({
     images: Array(9).fill(null).map((_, i) => ({
       id: i + 1,
-      url: `/placeholder.svg?height=100&width=100&text=Landsat ${i + 1}`,
       title: `Landsat Image ${i + 1}`,
       description: 'Default image. Search to see actual Landsat data.',
       metadata: {
@@ -61,7 +59,8 @@ export default function ResultsDisplay() {
   return (
     <div className="relative z-10 py-4 space-y-6 backdrop-blur-md bg-opacity-20 bg-blue-900 min-h-screen">
       <div className="max-w-6xl mx-auto px-4">
-        <h3 className="text-3xl font-bold mb-6 text-center text-blue-300 flex items-center justify-center">
+        <h1 className="text-4xl font-bold mb-10 text-center text-white">Results</h1>
+        <h3 className="text-3xl font-bold mb-6 text-center text-white flex items-center justify-center">
           <Globe className="mr-2 h-8 w-8" />
           NASA Landsat Explorer
         </h3>

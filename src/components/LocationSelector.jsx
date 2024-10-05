@@ -10,6 +10,7 @@ export default function LocationSelector() {
     const [inputLat, setInputLat] = useState('');
     const [inputLng, setInputLng] = useState('');
     const [pins, setPins] = useState([]);
+    //AQUI HAY QUE VER COMO PASAR LOS PINES, CADA UNO TIENE InputLat y InputLng
     const texture = useLoader(THREE.TextureLoader, '/assets/textures/earthmap1k.jpg');
     const textureCloud = useLoader(THREE.TextureLoader, '/assets/textures/earthCloud.png');
 
