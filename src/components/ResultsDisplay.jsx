@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Loader2, Search, Info, Download } from 'lucide-react';
+import { Globe, Loader2, Search, Info, Download, Satellite } from 'lucide-react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
@@ -37,6 +37,7 @@ export default function ResultsDisplay() {
             id: i + 1,
             title: `Landsat Image ${i + 1}`,
             description: 'Default image. Search to see actual Landsat data.',
+            url: '/api/placeholder/400/400',
             datos: {}
         }))
     });
@@ -60,29 +61,47 @@ export default function ResultsDisplay() {
     const generatePDF = (results) => {
         const doc = new jsPDF();
 
+        // Título centrado en la primera página
         doc.setFontSize(22);
         doc.text("Landsat", 105, 15, { align: "center" });
 
         results.images.forEach((image, index) => {
             if (index > 0) doc.addPage();
 
-            // Add image
-            doc.addImage(image.url, 'JPEG', 20, 30, 170, 100);
+            // Cargar la imagen manteniendo la proporción y ajustando el tamaño
+            const imgWidth = 170; // Ancho máximo
+            const imgHeight = 100; // Alto máximo
 
-            // Add descriptions
-            doc.setFontSize(16);
+            // Mantener las proporciones de la imagen
+            const imgRatio = image.width / image.height;
+            let scaledWidth = imgWidth;
+            let scaledHeight = imgHeight;
+
+            if (imgRatio > 1) {
+                // La imagen es más ancha que alta
+                scaledHeight = imgWidth / imgRatio;
+            } else {
+                // La imagen es más alta que ancha
+                scaledWidth = imgHeight * imgRatio;
+            }
+
+            doc.addImage(image.url, 'PNG', 20, 30, scaledWidth, scaledHeight);
+
+            // Agregar la descripción
+            doc.setFontSize(14); // Fuente para el título de descripción
             doc.text("Descripciones:", 20, 140);
 
-            doc.setFontSize(12);
+            doc.setFontSize(10); // Fuente más pequeña para la descripción
             let yPosition = 150;
             Object.entries(image.datos).forEach(([key, value], i) => {
                 doc.text(`${i + 1}. ${key}: ${value}`, 30, yPosition);
-                yPosition += 10;
+                yPosition += 8; // Espaciado ajustado para texto más pequeño
             });
         });
 
         doc.save("landsat_results.pdf");
     };
+
 
     const handleDownloadPDF = () => {
         generatePDF(results);
@@ -120,22 +139,28 @@ export default function ResultsDisplay() {
                         {results.images.map((image) => (
                             <div
                                 key={image.id}
-                                className="relative cursor-pointer overflow-hidden rounded-lg aspect-square"
+                                className="relative cursor-pointer overflow-hidden rounded-lg aspect-square group"
                                 onClick={() => setSelectedImage(image)}
                             >
                                 <img
                                     src={image.url}
                                     alt={image.title}
-                                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                                 />
-                                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end">
-                                    <p className="text-white text-sm p-2 truncate">{image.title}</p>
+                                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <Satellite className="text-white w-12 h-12" />
                                 </div>
+                                <p className="absolute bottom-0 left-0 right-0 text-white text-sm p-2 truncate bg-black bg-opacity-50">{image.title}</p>
                             </div>
                         ))}
                     </div>
 
-                    <div className="bg-gray-800  rounded-lg p-4 space-y-4">
+                    <div className="bg-gray-800 rounded-lg p-4 space-y-4">
+                        <img
+                            src={selectedImage.url}
+                            alt={selectedImage.title}
+                            className="w-full h-48 object-cover rounded-lg"
+                        />
                         <h4 className="text-xl font-semibold flex items-center space-x-2 text-blue-300">
                             <Info className="w-5 h-5" />
                             <span>{selectedImage.title}</span>
