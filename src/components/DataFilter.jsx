@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Satellite, CloudQueue, History, PlayArrow, Notifications, Email } from '@mui/icons-material';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import LocationSelector from './LocationSelector';
 
 export default function DataFilter() {
-    const filterUrl = 'http://localhost:4321/api/apply-filters';
+    const filterUrl = 'http://localhost:5000/api/apply-filters';
     const [filterOption, setFilterOption] = useState('live');
     const [cloudCoverage, setCloudCoverage] = useState(50);
     const [selectedData, setSelectedData] = useState({
@@ -119,6 +120,7 @@ export default function DataFilter() {
                 setFormStatus('Filters applied successfully!');
                 setErrorDetails('');
                 e.target.reset();
+                LocationSelector.sendPins();
             } else {
                 throw new Error(data.message || 'Server response was not ok.');
             }

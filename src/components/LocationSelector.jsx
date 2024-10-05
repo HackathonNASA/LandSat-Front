@@ -21,6 +21,34 @@ export default function LocationSelector() {
     const minScale = 1.5;
     const maxScale = 3.0;
 
+    const sendPins = async (e) => {
+        e.preventDefault();
+        const pinsString = JSON.stringify(pins);
+        console.log('Sending pins:', pinsString);
+        try {
+            const response = await fetch('http://localhost:5000/api/submit-pins', {
+                method: 'POST',
+                body: pinsString,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setFormStatus('Pins submitted successfully!');
+                setErrorDetails('');
+                e.target.reset();
+            } else {
+                throw new Error(data.message || 'Server response was not ok.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setFormStatus('There was an error submitting the pins. Please try again.');
+            setErrorDetails(error.message || 'Unknown error occurred');
+        }
+    };
+
+
+
     const handleEarthPointerDown = () => {
         setIsDragging(false);
     };
@@ -128,10 +156,6 @@ export default function LocationSelector() {
     const handleZoomOut = () => {
         setScale(prevScale => Math.max(prevScale - 0.1, minScale)); // Decrease scale, set minimum to minScale
     };
-
-    // Print the function definitions to the console
-    console.log(handleZoomIn.toString());
-    console.log(handleZoomOut.toString());
 
     return (
         <section className="relative z-10 py-16">
