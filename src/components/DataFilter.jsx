@@ -7,6 +7,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
     const filterUrl = 'http://localhost:4321/api/apply-filters';
     const [filterOption, setFilterOption] = useState('live');
     const [cloudCoverage, setCloudCoverage] = useState(50);
+    const [isButtonEnabled2, setIsButtonEnabled2] = useState(false);
     const [selectedData, setSelectedData] = useState({
         QA_PIXEL: false,
         QA_RADSAT: false,
@@ -40,6 +41,8 @@ export default function DataFilter({ isButtonEnabled, pins }) {
     const [satellitePassTime, setSatellitePassTime] = useState({ landsat8: null, landsat9: null });
 
     useEffect(() => {
+        const anySelected = Object.values(selectedSatellites).some((value) => value);
+        setIsButtonEnabled2(anySelected); // Se actualiza isButtonEnabled2
         if (selectedSatellites.landsat8) {
             setSatellitePassTime(prev => ({ ...prev, landsat8: Math.floor(Math.random() * 24) + 1 }));
         }
@@ -350,9 +353,9 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                     {/* Submit Button */}
                     <div className="text-center">
                         <button
-                            disabled={!isButtonEnabled}
+                            disabled={!isButtonEnabled || !isButtonEnabled2}
                             type="submit"
-                            className={`font-bold py-2 px-4 rounded transition-all ${isButtonEnabled
+                            className={`font-bold py-2 px-4 rounded transition-all ${isButtonEnabled && isButtonEnabled2
                                 ? "bg-blue-600 hover:bg-blue-700 text-white"
                                 : "bg-gray-400 text-gray-200 cursor-not-allowed"
                                 }`}
@@ -362,7 +365,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
 
                     </div>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }
