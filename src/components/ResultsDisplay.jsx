@@ -144,6 +144,32 @@ export default function ResultsDisplay() {
         generatePDF(results);
     };
 
+    const handleDownloadCSV = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/download-csv');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            // Convert response to blob for download
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            // Create a temporary link element for download
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'landsat_data.csv'); // Filename for download
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading CSV:', error);
+        }
+    };
+
     return (
         <div className="bg-black bg-opacity-50 rounded-lg py-8 px-4">
             <div className="max-w-6xl mx-auto space-y-8">
@@ -223,7 +249,14 @@ export default function ResultsDisplay() {
                                 className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 flex items-center"
                             >
                                 <Download className="mr-2 h-5 w-5" />
-                                Download Results as PDF
+                                PDF
+                            </button>
+                            <button
+                                onClick={handleDownloadCSV}
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 flex items-center"
+                            >
+                                <Download className="mr-2 h-5 w-5" />
+                                CSV
                             </button>
                         </div>
                     </>
