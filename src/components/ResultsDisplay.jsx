@@ -54,6 +54,7 @@ export default function ResultsDisplay() {
     const generatePDF = async (results) => {
         const doc = new jsPDF();
 
+        // Title centered on the first page
         doc.setFontSize(22);
         doc.text("Landsat", 105, 15, { align: "center" });
 
@@ -75,36 +76,69 @@ export default function ResultsDisplay() {
         };
 
         for (const [index, image] of results.images.entries()) {
-            if (index > 0) doc.addPage();
+            if (index > 0) doc.addPage(); // Add new page after the first
 
-            const imgWidth = 170;
-            const imgHeight = 100;
+            try {
+                // Load the image
+                const imgElement = await loadImage(image.url);
+                const imgWidth = imgElement.width;
+                const imgHeight = imgElement.height;
 
-            const imgRatio = image.width / image.height;
-            let scaledWidth = imgWidth;
-            let scaledHeight = imgHeight;
+                // Maintain aspect ratio and scale the image
+                const maxWidth = 170;
+                const maxHeight = 100;
+                let scaledWidth = imgWidth;
+                let scaledHeight = imgHeight;
 
-            if (imgRatio > 1) {
-                scaledHeight = imgWidth / imgRatio;
-            } else {
-                scaledWidth = imgHeight * imgRatio;
+                const imgRatio = imgWidth / imgHeight;
+
+                if (imgRatio > 1) {
+                    // Image is wider than tall
+                    scaledWidth = maxWidth;
+                    scaledHeight = maxWidth / imgRatio;
+                } else {
+                    // Image is taller than wide
+                    scaledHeight = maxHeight;
+                    scaledWidth = maxHeight * imgRatio;
+                }
+
+                // Add the image to the PDF
+                doc.addImage(imgElement, 'PNG', 20, 30, scaledWidth, scaledHeight);
+
+                // Add title for the data
+                doc.setFontSize(14);
+                doc.text("Data:", 20, 140);
+
+                // Split data into two columns
+                const entries = Object.entries(image.datos);
+                const half = Math.ceil(entries.length / 2); // Halfway point for splitting the data
+
+                // First column (left)
+                let yPosition = 150;
+                doc.setFontSize(10);
+                entries.slice(0, half).forEach(([key, value], i) => {
+                    doc.text(`${i + 1}. ${key}: ${value}`, 30, yPosition);
+                    yPosition += 8; // Space between entries
+                });
+
+                // Second column (right)
+                let yPositionRight = 150; // Same starting position for the second column
+                const secondColumnOffset = 110; // Offset to move the text to the right column
+                entries.slice(half).forEach(([key, value], i) => {
+                    doc.text(`${half + i + 1}. ${key}: ${value}`, secondColumnOffset, yPositionRight);
+                    yPositionRight += 8; // Space between entries in the right column
+                });
+
+            } catch (error) {
+                console.error('Error loading image:', error);
+                doc.text(`Error loading image: ${image.url}`, 20, 30); // Display an error in PDF if the image fails to load
             }
+        }
 
-            doc.addImage(image.url, 'PNG', 20, 30, scaledWidth, scaledHeight);
-
-            doc.setFontSize(14);
-            doc.text("Descripciones:", 20, 140);
-
-            doc.setFontSize(10);
-            let yPosition = 150;
-            Object.entries(image.datos).forEach(([key, value], i) => {
-                doc.text(`${i + 1}. ${key}: ${value}`, 30, yPosition);
-                yPosition += 8;
-            });
-        };
-
+        // Save the PDF
         doc.save("landsat_results.pdf");
     };
+
 
     const handleDownloadPDF = () => {
         generatePDF(results);
@@ -182,6 +216,15 @@ export default function ResultsDisplay() {
                                     ))}
                                 </div>
                             </div>
+                        </div>
+                        <div className="flex justify-center">
+                            <button
+                                onClick={handleDownloadPDF}
+                                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 flex items-center"
+                            >
+                                <Download className="mr-2 h-5 w-5" />
+                                Download Results as PDF
+                            </button>
                         </div>
                     </>
                 )}
