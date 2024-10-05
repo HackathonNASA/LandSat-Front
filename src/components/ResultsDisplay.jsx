@@ -37,7 +37,6 @@ export default function ResultsDisplay() {
             id: i + 1,
             title: `Landsat Image ${i + 1}`,
             description: 'Default image. Search to see actual Landsat data.',
-            url: '/api/placeholder/400/400',
             datos: {}
         }))
     });
@@ -58,49 +57,77 @@ export default function ResultsDisplay() {
         }
     };
 
-    const generatePDF = (results) => {
+    const generatePDF = async (results) => {
         const doc = new jsPDF();
 
-        // Título centrado en la primera página
+        // Title centered on the first page
         doc.setFontSize(22);
         doc.text("Landsat", 105, 15, { align: "center" });
 
-        results.images.forEach((image, index) => {
+        // Function to load image and get its dimensions
+        const loadImage = (url) => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.src = url;
+
+                img.onload = () => {
+                    resolve(img);
+                };
+
+                img.onerror = (error) => {
+                    reject(error);
+                };
+            });
+        };
+
+        for (const [index, image] of results.images.entries()) {
             if (index > 0) doc.addPage();
 
-            // Cargar la imagen manteniendo la proporción y ajustando el tamaño
-            const imgWidth = 170; // Ancho máximo
-            const imgHeight = 100; // Alto máximo
+            try {
+                const imgElement = await loadImage(image.url); // Load the image
+                const imgWidth = imgElement.width; // Get the width
+                const imgHeight = imgElement.height; // Get the height
 
-            // Mantener las proporciones de la imagen
-            const imgRatio = image.width / image.height;
-            let scaledWidth = imgWidth;
-            let scaledHeight = imgHeight;
+                // Maintain the aspect ratio and scale the image
+                const maxWidth = 170; // Maximum width
+                const maxHeight = 100; // Maximum height
+                let scaledWidth = imgWidth;
+                let scaledHeight = imgHeight;
 
-            if (imgRatio > 1) {
-                // La imagen es más ancha que alta
-                scaledHeight = imgWidth / imgRatio;
-            } else {
-                // La imagen es más alta que ancha
-                scaledWidth = imgHeight * imgRatio;
+                const imgRatio = imgWidth / imgHeight;
+
+                if (imgRatio > 1) {
+                    // Image is wider than it is tall
+                    scaledWidth = maxWidth;
+                    scaledHeight = maxWidth / imgRatio;
+                } else {
+                    // Image is taller than it is wide
+                    scaledHeight = maxHeight;
+                    scaledWidth = maxHeight * imgRatio;
+                }
+
+                doc.addImage(imgElement, 'PNG', 20, 30, scaledWidth, scaledHeight);
+
+                // Add the description
+                doc.setFontSize(14); // Font for the title of the description
+                doc.text("Descripciones:", 20, 140);
+
+                doc.setFontSize(10); // Smaller font for the description
+                let yPosition = 150;
+                Object.entries(image.datos).forEach(([key, value], i) => {
+                    doc.text(`${i + 1}. ${key}: ${value}`, 30, yPosition);
+                    yPosition += 8; // Spacing adjusted for smaller text
+                });
+            } catch (error) {
+                console.error('Error loading image:', error);
+                doc.text(`Error loading image: ${image.url}`, 20, 30); // Optional error handling in PDF
             }
-
-            doc.addImage(image.url, 'PNG', 20, 30, scaledWidth, scaledHeight);
-
-            // Agregar la descripción
-            doc.setFontSize(14); // Fuente para el título de descripción
-            doc.text("Descripciones:", 20, 140);
-
-            doc.setFontSize(10); // Fuente más pequeña para la descripción
-            let yPosition = 150;
-            Object.entries(image.datos).forEach(([key, value], i) => {
-                doc.text(`${i + 1}. ${key}: ${value}`, 30, yPosition);
-                yPosition += 8; // Espaciado ajustado para texto más pequeño
-            });
-        });
+        }
 
         doc.save("landsat_results.pdf");
     };
+
 
 
     const handleDownloadPDF = () => {
@@ -159,7 +186,7 @@ export default function ResultsDisplay() {
                         <img
                             src={selectedImage.url}
                             alt={selectedImage.title}
-                            className="w-full h-48 object-cover rounded-lg"
+                            className="w-auto h-auto max-h-96 object-contain rounded-lg"
                         />
                         <h4 className="text-xl font-semibold flex items-center space-x-2 text-blue-300">
                             <Info className="w-5 h-5" />
