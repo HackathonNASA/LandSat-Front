@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function DataFilter({ isButtonEnabled, pins }) {
-    const filterUrl = 'http://localhost:4321/api/apply-filters';
+    const filterUrl = 'http://127.0.0.1:5000/api/apply-filters';
     const [filterOption, setFilterOption] = useState('live');
     const [cloudCoverage, setCloudCoverage] = useState(50);
     const [isButtonEnabled2, setIsButtonEnabled2] = useState(false);
