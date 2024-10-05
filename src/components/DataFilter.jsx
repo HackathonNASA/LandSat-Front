@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Satellite, CloudQueue, History, PlayArrow, Notifications, Email } from '@mui/icons-material';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import LocationSelector from './LocationSelector';
 
 export default function DataFilter() {
-    const filterUrl = 'http://localhost:5000/api/apply-filters';
+    const filterUrl = 'http://localhost:4321/api/apply-filters';
     const [filterOption, setFilterOption] = useState('live');
     const [cloudCoverage, setCloudCoverage] = useState(50);
     const [selectedData, setSelectedData] = useState({
@@ -35,7 +34,7 @@ export default function DataFilter() {
         landsat8: false,
         landsat9: false,
     });
-    const [notificationDelay, setNotificationDelay] = useState("15min");
+    const [notificationDelay, setNotificationDelay] = useState("15");
     const [email, setEmail] = useState('');
     const [notificationType, setNotificationType] = useState('browser');
     const [satellitePassTime, setSatellitePassTime] = useState({ landsat8: null, landsat9: null });
@@ -139,6 +138,7 @@ export default function DataFilter() {
             setErrorDetails(error.message || 'Unknown error occurred');
         }
     };
+
 
     const groupedData = Object.keys(selectedData).reduce((acc, key) => {
         const prefix = key.split('_')[0];
@@ -267,10 +267,10 @@ export default function DataFilter() {
                                         onChange={(e) => setNotificationDelay(e.target.value)}
                                         className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
                                     >
-                                        <option value="15min">15 minutes</option>
-                                        <option value="30min">30 minutes</option>
-                                        <option value="1h">1 hour</option>
-                                        <option value="2h">2 hours</option>
+                                        <option value="15">15 minutes</option>
+                                        <option value="30">30 minutes</option>
+                                        <option value="60">1 hour</option>
+                                        <option value="120">2 hours</option>
                                     </select>
                                 </div>
                                 <div>

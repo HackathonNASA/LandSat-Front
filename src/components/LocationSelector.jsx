@@ -3,8 +3,6 @@ import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
-
-
 export default function LocationSelector() {
     const [locationType, setLocationType] = useState("coordinates");
     const [inputLat, setInputLat] = useState('');
