@@ -2,12 +2,14 @@ import React, { useState, Suspense } from 'react';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import DataFilter from './DataFilter';
 
-export default function LocationSelector() {
+export default function LocationSelector({ onAddPin, onRemovePin }) {
     const [locationType, setLocationType] = useState("coordinates");
     const [inputLat, setInputLat] = useState('');
     const [inputLng, setInputLng] = useState('');
     const [pins, setPins] = useState([]);
+    const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     //AQUI HAY QUE VER COMO PASAR LOS PINES, CADA UNO TIENE InputLat y InputLng
     const texture = useLoader(THREE.TextureLoader, '/assets/textures/earthmap1k.jpg');
     const textureCloud = useLoader(THREE.TextureLoader, '/assets/textures/earthCloud.png');
@@ -45,6 +47,7 @@ export default function LocationSelector() {
                 ...prevPins,
                 { lat, lng, position: point.clone().multiplyScalar(pinDistance) }
             ]);
+            setIsButtonEnabled(true);
         }
     };
 
@@ -72,6 +75,7 @@ export default function LocationSelector() {
         const z = Math.sin(phi) * Math.sin(theta);
         const pinDistance = 1.02;
 
+        setIsButtonEnabled(true);
         setPins((prevPins) => [
             ...prevPins,
             { lat, lng, position: new THREE.Vector3(x, y, z).multiplyScalar(pinDistance) }
@@ -93,6 +97,7 @@ export default function LocationSelector() {
         const z = Math.sin(phi) * Math.sin(theta);
         const pinDistance = 1.02;
 
+        setIsButtonEnabled(true);
         setPins((prevPins) => [
             ...prevPins,
             { lat, lng, position: new THREE.Vector3(x, y, z).multiplyScalar(pinDistance) }
@@ -122,6 +127,7 @@ export default function LocationSelector() {
 
     const handleClearPins = () => {
         setPins([]);
+        setIsButtonEnabled(false);
     };
 
     const handleZoomIn = () => {
@@ -338,6 +344,7 @@ export default function LocationSelector() {
                     </div>
                 </div>
             </div>
+            <DataFilter pins={pins} isButtonEnabled={isButtonEnabled} />
         </section>
     );
 }

@@ -3,7 +3,7 @@ import { Satellite, CloudQueue, History, PlayArrow, Notifications, Email } from 
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function DataFilter() {
+export default function DataFilter({ isButtonEnabled, pins }) {
     const filterUrl = 'http://localhost:4321/api/apply-filters';
     const [filterOption, setFilterOption] = useState('live');
     const [cloudCoverage, setCloudCoverage] = useState(50);
@@ -109,9 +109,7 @@ export default function DataFilter() {
             }
         }
 
-        // Get pins string and append to formData
-        const pinsString = await LocationSelector.getPins();
-        formData.append('pins', pinsString);
+        formData.append('pins', pins.toISOString);
 
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
@@ -351,11 +349,16 @@ export default function DataFilter() {
                     {/* Submit Button */}
                     <div className="text-center">
                         <button
+                            disabled={!isButtonEnabled}
                             type="submit"
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            className={`font-bold py-2 px-4 rounded transition-all ${isButtonEnabled
+                                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                                }`}
                         >
                             Submit
                         </button>
+
                     </div>
                 </form>
             </div>
