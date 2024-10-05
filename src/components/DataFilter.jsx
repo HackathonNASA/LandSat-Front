@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Satellite, CloudQueue, History, PlayArrow, Notifications, Email } from '@mui/icons-material';
+import { Settings as SettingsIcon } from '@mui/icons-material';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -154,18 +155,18 @@ export default function DataFilter({ isButtonEnabled, pins }) {
     return (
         <div className="mb-28 text-white p-8">
             <div className="max-w-4xl mx-auto bg-black bg-opacity-60 rounded-lg shadow-lg p-8 backdrop-blur-sm">
-                <h2 className="text-3xl font-bold mb-8 text-center">Landsat Data Filter</h2>
+                <h2 className="text-3xl font-bold mb-8 text-center">Data Filter</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-12">
                     {/* Data Type Selection */}
                     <div className="text-center">
                         <h3 className="text-lg font-semibold mb-4 flex items-center justify-center text-white">
-                            <Satellite className="mr-2 text-blue-400" /> Select Data Types
+                            <Satellite className="mr-2 text-blue-400" /> Data Types
                         </h3>
                         <div className="flex flex-wrap justify-center gap-4">
                             {Object.entries(groupedData).map(([prefix, dataTypes]) => (
                                 <div key={prefix} className="bg-gray-800 bg-opacity-60 rounded-lg p-4 w-64">
-                                    <h4 className="text-lg font-semibold mb-2">Select {prefix}_ Values</h4>
+                                    <h4 className="text-lg font-semibold mb-2">{prefix}_ Values</h4>
                                     <div className="h-48 overflow-y-auto">
                                         {dataTypes.map((dataType) => (
                                             <label key={dataType} className="flex items-center space-x-2 mb-2">
@@ -205,7 +206,9 @@ export default function DataFilter({ isButtonEnabled, pins }) {
 
                     {/* Historical/Live Toggle */}
                     <div className="text-center">
-                        <h3 className="text-xl font-semibold mb-4">Data Mode</h3>
+                        <h3 className="text-xl font-semibold mb-4 flex items-center">
+                            <SettingsIcon className="mr-2" /> Mode
+                        </h3>
                         <div className="flex justify-center space-x-4">
                             <button
                                 type="button"
@@ -229,10 +232,9 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                     {/* Historical Data Options */}
                     {filterOption === 'historical' && (
                         <div className="text-center space-y-4">
-                            <h3 className="text-xl font-semibold mb-4">Historical Data Options</h3>
                             <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
                                 <div>
-                                    <label className="block mb-2">Start Date</label>
+                                    <label className="block font-bold mb-2">Start Date</label>
                                     <DatePicker
                                         selected={startDate}
                                         onChange={(date) => setStartDate(date)}
@@ -243,7 +245,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block mb-2">End Date</label>
+                                    <label className="block font-bold mb-2">End Date</label>
                                     <DatePicker
                                         selected={endDate}
                                         onChange={(date) => setEndDate(date)}
@@ -260,10 +262,10 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                     {/* Live Data Options */}
                     {filterOption === 'live' && (
                         <div className="text-center space-y-4">
-                            <h3 className="text-xl font-semibold mb-4">Live Data Options</h3>
+                            <h3 className="text-xl font-semibold mb-4">Notification</h3>
                             <div className="grid grid-cols-2 gap-32 max-w-md mx-auto">
                                 <div>
-                                    <label className="block mb-2">Notification Delay</label>
+                                    <label className="block font-bold mb-2">Delay</label>
                                     <select
                                         value={notificationDelay}
                                         onChange={(e) => setNotificationDelay(e.target.value)}
@@ -276,7 +278,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block mb-4">Notification Type</label>
+                                    <label className="block font-bold mb-4">Type</label>
                                     <div className="flex items-center justify-center gap-5">
                                         <label className="flex items-center space-x-2 cursor-pointer">
                                             <input
@@ -325,7 +327,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
 
                     {/* Satellite Selection */}
                     <div className="text-center space-y-4">
-                        <h3 className="text-xl font-semibold mb-4">Select Satellites</h3>
+                        <h3 className="text-xl font-semibold mb-4">Satellites</h3>
                         <div className="inline-grid grid-cols-2 gap-4">
                             <label className="flex items-center space-x-2 cursor-pointer">
                                 <input
