@@ -41,10 +41,7 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
             const lat = 90 - (phi * 180) / Math.PI;
             const lng = (theta * 180) / Math.PI;
             const pinDistance = 1.02;
-            setPins((prevPins) => [
-                ...prevPins,
-                { lat, lng, position: point.clone().multiplyScalar(pinDistance) }
-            ]);
+            setPins([{ lat, lng, position: point.clone().multiplyScalar(pinDistance) }]);
             setIsButtonEnabled(true);
         }
     };
@@ -74,10 +71,8 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
         const pinDistance = 1.02;
 
         setIsButtonEnabled(true);
-        setPins((prevPins) => [
-            ...prevPins,
-            { lat, lng, position: new THREE.Vector3(x, y, z).multiplyScalar(pinDistance) }
-        ]);
+
+        setPins([{ lat, lng, position: point.clone().multiplyScalar(pinDistance) }]);
     };
 
     const handleAddPin = () => {
@@ -96,10 +91,8 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
         const pinDistance = 1.02;
 
         setIsButtonEnabled(true);
-        setPins((prevPins) => [
-            ...prevPins,
-            { lat, lng, position: new THREE.Vector3(x, y, z).multiplyScalar(pinDistance) }
-        ]);
+
+        setPins([{ lat, lng, position: point.clone().multiplyScalar(pinDistance) }]);
 
         setInputLat('');
         setInputLng('');
@@ -270,7 +263,7 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
                                     marginTop: '10px'
                                 }}
                             >
-                                Remove all pins
+                                Remove pin
                             </button>
                         </form>
                     </div>
@@ -304,7 +297,7 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
                                         <React.Fragment key={index}>
                                             <mesh position={pin.position.clone().multiplyScalar(scale)}>
                                                 <sphereGeometry args={[0.005 * scale, 16, 16]} />
-                                                <meshBasicMaterial color="red" />
+                                                <meshBasicMaterial color="white" />
                                             </mesh>
                                             <Html position={pin.position.clone().multiplyScalar(scale)}>
                                                 <div style={{

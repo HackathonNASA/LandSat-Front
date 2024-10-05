@@ -69,13 +69,24 @@ export default function DataFilter({ isButtonEnabled, pins }) {
         setCloudCoverage(e.target.value);
     };
 
-    const handleSatelliteChange = (e) => {
-        const { name, checked } = e.target;
-        setSelectedSatellites((prevState) => ({
+    const handleSatelliteChange = (event) => {
+        const { name, checked } = event.target;
+
+        // Actualizar el estado de la selección de satélites
+        setSelectedSatellites(prevState => ({
             ...prevState,
-            [name]: checked,
+            [name]: checked
         }));
+
+        // Validación: al menos uno de los checkboxes debe estar seleccionado
+        if (checked || (!checked && !prevState.landsat8 && !prevState.landsat9)) {
+            setSelectedSatellites(prevState => ({
+                ...prevState,
+                [name]: checked
+            }));
+        }
     };
+
 
     const maxHistoricalDate = new Date();
     const minHistoricalDate = new Date(maxHistoricalDate);
@@ -112,7 +123,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                 formData.append('email', email);
             }
         }
-        if(pins.length >0){
+        if (pins.length > 0) {
             formData.append('pins', JSON.stringify(pins, null, 2));
         }
 
@@ -315,6 +326,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                                         type="email"
                                         id="email"
                                         value={email}
+                                        request
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="example@email.com"
                                         className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
@@ -350,6 +362,9 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                                 <span>Landsat 9</span>
                             </label>
                         </div>
+                        {(!selectedSatellites.landsat8 && !selectedSatellites.landsat9) && (
+                            <p className="text-red-500 text-sm">Please select at least one satellite and put one pin.</p>
+                        )}
                     </div>
 
                     {/* Submit Button */}
