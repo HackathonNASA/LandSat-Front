@@ -101,7 +101,7 @@ export default function ResultsDisplay() {
                 doc.text(`${i + 1}. ${key}: ${value}`, 30, yPosition);
                 yPosition += 8;
             });
-        });
+        };
 
         doc.save("landsat_results.pdf");
     };
