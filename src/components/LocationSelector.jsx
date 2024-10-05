@@ -3,7 +3,6 @@ import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import DataFilter from './DataFilter';
-import Satellite from './Satellite';
 
 export default function LocationSelector({ onAddPin, onRemovePin }) {
     const [locationType, setLocationType] = useState("coordinates");
@@ -320,13 +319,6 @@ export default function LocationSelector({ onAddPin, onRemovePin }) {
                                                 </div>
                                             </Html>
                                         </React.Fragment>
-                                    ))}
-                                    {[...Array(5)].map((_, i) => (
-                                        <Satellite
-                                            key={i}
-                                            distanceFromEarth={1.8 + i * 0.1} // Distancia de la Tierra
-                                            rotationSpeed={0.02 + i * 0.005} // Velocidad de rotación
-                                        />
                                     ))}
                                 </Suspense>
                                 <OrbitControls enableZoom={true} minDistance={2} maxDistance={4} />
