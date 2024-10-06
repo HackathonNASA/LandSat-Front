@@ -300,8 +300,16 @@ export default function ResultsDisplay() {
                             <ResponsiveContainer width="100%" height={400}>
                                 <LineChart data={graphData}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" stroke="#ffffff" />
-                                    <YAxis domain={yDomain} stroke="#ffffff" />
+                                    <XAxis
+                                        dataKey="name"
+                                        stroke="#ffffff"
+                                        tick={{ fontSize: 12 }}  // Ajusta el tamaño de la fuente aquí
+                                    />
+                                    <YAxis
+                                        domain={yDomain}
+                                        stroke="#ffffff"
+                                        tick={{ fontSize: 12 }}  // Ajusta el tamaño de la fuente aquí
+                                    />
                                     <Tooltip />
                                     <Legend />
                                     <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={3} />
@@ -318,8 +326,16 @@ export default function ResultsDisplay() {
                             <ResponsiveContainer width="100%" height={400}>
                                 <LineChart data={comparisonData}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" stroke="#ffffff" />
-                                    <YAxis domain={yDomain} stroke="#ffffff" />
+                                    <XAxis
+                                        dataKey="name"
+                                        stroke="#ffffff"
+                                        tick={{ fontSize: 12 }}  // Ajusta el tamaño de la fuente aquí
+                                    />
+                                    <YAxis
+                                        domain={yDomain}
+                                        stroke="#ffffff"
+                                        tick={{ fontSize: 12 }}  // Ajusta el tamaño de la fuente aquí
+                                    />
                                     <Tooltip />
                                     <Legend />
                                     <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={3} />
@@ -332,6 +348,7 @@ export default function ResultsDisplay() {
                             </ResponsiveContainer>
                         </div>
                     </div>
+
                 </>
             )}
         </div>
