@@ -9,6 +9,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
     const [filterOption, setFilterOption] = useState('live');
     const [cloudCoverage, setCloudCoverage] = useState(50);
     const [isButtonEnabled2, setIsButtonEnabled2] = useState(false);
+    const [generatedToken, setGeneratedToken] = useState(''); // State for generated token
     const dataTypeDescriptions = {
         QA_PIXEL: "Quality of pixels",
         QA_RADSAT: "Radiative interference",
@@ -118,6 +119,9 @@ export default function DataFilter({ isButtonEnabled, pins }) {
         }
     };
 
+    const generateToken = () => {
+        return Math.random().toString(36).substr(2, 10); // Generate a random token
+    };
 
     const maxHistoricalDate = new Date();
     const minHistoricalDate = new Date(maxHistoricalDate);
@@ -125,6 +129,8 @@ export default function DataFilter({ isButtonEnabled, pins }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = generateToken(); // Generate the token
+        setGeneratedToken(token);      // Set the generated token before making the API call
 
         const formData = new FormData();
 
@@ -139,8 +145,6 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                 formData.append('selectedData', key);
             }
         });
-
-
 
         if (filterOption === 'historical') {
             // Add historical specific data
@@ -174,6 +178,7 @@ export default function DataFilter({ isButtonEnabled, pins }) {
                 setFormStatus('Filters applied successfully!');
                 setErrorDetails('');
                 e.target.reset();
+                setGeneratedToken(generateToken()); // Generate and set the token
             } else {
                 throw new Error(data.message || 'Server response was not ok.');
             }
@@ -182,7 +187,6 @@ export default function DataFilter({ isButtonEnabled, pins }) {
             setErrorDetails(error.message || 'Unknown error occurred');
         }
     };
-
 
     const groupedData = Object.keys(selectedData).reduce((acc, key) => {
         const prefix = key.split('_')[0];
@@ -194,233 +198,248 @@ export default function DataFilter({ isButtonEnabled, pins }) {
     }, {});
 
     return (
-        <div className="mb-28 text-white p-8">
-            <div className="max-w-4xl mx-auto bg-black bg-opacity-60 rounded-lg shadow-lg p-8 backdrop-blur-sm">
-                <h2 className="text-3xl font-bold mb-8 text-center">Data Filter</h2>
+        <div className="mb-28 text-white p-8 w-full max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8 text-center">Data Filter</h2>
 
-                <form onSubmit={handleSubmit} className="space-y-12">
-                    {/* Data Type Selection */}
-                    <div className="text-center">
-                        <h3 className="text-lg font-semibold mb-4 flex items-center justify-center text-white">
-                            <Satellite className="mr-2 text-blue-400" /> Data Types
-                        </h3>
-                        <div className="flex flex-wrap justify-center gap-4">
-                            {Object.entries(groupedData).map(([prefix, dataTypes]) => (
-                                <div key={prefix} className="bg-gray-800 bg-opacity-60 rounded-lg p-4 w-64">
-                                    <label className="flex items-center justify-center mb-2">
-                                        <input
-                                            type="checkbox"
-                                            checked={dataTypes.every((dataType) => selectedData[dataType])}
-                                            onChange={() => handleSelectAll(prefix, dataTypes)}
-                                            className="form-checkbox h-5 w-5 text-blue-400 rounded border-gray-600"
-                                        />
-                                        <span className="text-lg font-semibold ml-2">{prefix.replace(/_/g, ' ')} Values</span>
-                                    </label>
-                                    <div className="h-48 overflow-y-auto">
-                                        {dataTypes.map((dataType) => (
-                                            <label key={dataType} className="flex items-center space-x-2 mb-2">
-                                                <input
-                                                    type="checkbox"
-                                                    name={dataType}
-                                                    checked={selectedData[dataType]} // Controla el estado del checkbox
-                                                    onChange={handleCheckboxChange} // Maneja el cambio
-                                                    className="form-checkbox h-5 w-5 text-blue-400 rounded border-gray-600"
-                                                />
-                                                <span className="text-gray-300 text-sm">{dataTypeDescriptions[dataType]}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Cloud Coverage */}
-                    <div className="text-center">
-                        <h3 className="text-xl font-semibold mb-4 flex justify-center items-center">
-                            <CloudQueue className="mr-2" /> Cloud Coverage
-                        </h3>
-                        <div className="flex items-center justify-center space-x-4 max-w-md mx-auto">
-                            <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                value={cloudCoverage}
-                                onChange={handleCloudCoverageChange}
-                                className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
-                            />
-                            <span className="text-lg font-semibold">{cloudCoverage}%</span>
-                        </div>
-                    </div>
-
-                    {/* Historical/Live Toggle */}
-                    <div className="text-center">
-                        <h3 className="text-xl font-semibold mb-4 justify-center flex items-center">
-                            <SettingsIcon className="mr-2" /> Mode
-                        </h3>
-                        <div className="flex justify-center space-x-4">
-                            <button
-                                type="button"
-                                onClick={() => handleFilterChange('historical')}
-                                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors duration-200 ${filterOption === 'historical' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                            >
-                                <History />
-                                <span>Historical</span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => handleFilterChange('live')}
-                                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors duration-200 ${filterOption === 'live' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                            >
-                                <Notifications />
-                                <span>Live</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Historical Data Options */}
-                    {filterOption === 'historical' && (
-                        <div className="text-center space-y-4">
-                            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                                <div>
-                                    <label className="block font-bold mb-2">Start Date</label>
-                                    <DatePicker
-                                        selected={startDate}
-                                        onChange={(date) => setStartDate(date)}
-                                        dateFormat="dd/MM/yyyy"  // Día/mes/año
-                                        maxDate={maxHistoricalDate}
-                                        minDate={minHistoricalDate}
-                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block font-bold mb-2">End Date</label>
-                                    <DatePicker
-                                        selected={endDate}
-                                        onChange={(date) => setEndDate(date)}
-                                        dateFormat="dd/MM/yyyy"  // Día/mes/año
-                                        maxDate={new Date()}
-                                        minDate={startDate}
-                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Live Data Options */}
-                    {filterOption === 'live' && (
-                        <div className="text-center space-y-4">
-                            <h3 className="text-xl font-semibold mb-4">Notification</h3>
-                            <div className="grid grid-cols-2 gap-32 max-w-md mx-auto">
-                                <div>
-                                    <label className="block font-bold mb-2">Delay</label>
-                                    <select
-                                        value={notificationDelay}
-                                        onChange={(e) => setNotificationDelay(e.target.value)}
-                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
-                                    >
-                                        <option value="15">15 minutes</option>
-                                        <option value="30">30 minutes</option>
-                                        <option value="60">1 hour</option>
-                                        <option value="120">2 hours</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block font-bold mb-4">Type</label>
-                                    <div className="flex items-center justify-center gap-5">
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                value="browser"
-                                                checked={notificationType === 'browser'}
-                                                onChange={(e) => setNotificationType(e.target.value)}
-                                                className="form-radio h-5 w-5 text-blue-600"
-                                            />
-                                            <span className="flex items-center">
-                                                <Notifications className="mr-2" /> Browser
-                                            </span>
-                                        </label>
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                value="email"
-                                                checked={notificationType === 'email'}
-                                                onChange={(e) => setNotificationType(e.target.value)}
-                                                className="form-radio h-5 w-5 text-blue-600"
-                                            />
-                                            <span className="flex items-center">
-                                                <Email className="mr-2" /> Email
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {notificationType === 'email' && (
-                                <div className="max-w-md mx-auto">
-                                    <label htmlFor="email" className="block mb-2">Email Address</label>
+            <form onSubmit={handleSubmit} className="space-y-12">
+                {/* Data Type Selection */}
+                <div className="text-center">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center justify-center text-white">
+                        <Satellite className="mr-2 text-blue-400" /> Data Types
+                    </h3>
+                    <div className="flex flex-wrap justify-center gap-4">
+                        {Object.entries(groupedData).map(([prefix, dataTypes]) => (
+                            <div key={prefix} className="bg-gray-800 bg-opacity-60 rounded-lg p-4 w-full sm:w-64">
+                                <label className="flex items-center justify-center mb-2">
                                     <input
-                                        type="email"
-                                        id="email"
-                                        value={email}
-                                        request
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="example@email.com"
-                                        className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
-                                        required={notificationType === 'email'}
+                                        type="checkbox"
+                                        checked={dataTypes.every((dataType) => selectedData[dataType])}
+                                        onChange={() => handleSelectAll(prefix, dataTypes)}
+                                        className="form-checkbox h-5 w-5 text-blue-400 rounded border-gray-600"
                                     />
+                                    <span className="text-lg font-semibold ml-2">{prefix.replace(/_/g, ' ')} Values</span>
+                                </label>
+                                <div className={`overflow-y-auto ${dataTypes.length <= 2 ? 'h-24' : 'h-48'}`}>
+                                    {dataTypes.map((dataType) => (
+                                        <label key={dataType} className="flex items-center space-x-2 mb-2">
+                                            <input
+                                                type="checkbox"
+                                                name={dataType}
+                                                checked={selectedData[dataType]} // Controla el estado del checkbox
+                                                onChange={handleCheckboxChange} // Maneja el cambio
+                                                className="form-checkbox h-5 w-5 text-blue-400 rounded border-gray-600"
+                                            />
+                                            <span className="text-gray-300 text-sm">{dataTypeDescriptions[dataType]}</span>
+                                        </label>
+                                    ))}
                                 </div>
-                            )}
-                        </div>
-                    )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
 
-                    {/* Satellite Selection */}
+                {/* Cloud Coverage */}
+                <div className="text-center">
+                    <h3 className="text-xl font-semibold mb-4 flex justify-center items-center">
+                        <CloudQueue className="mr-2" /> Cloud Coverage
+                    </h3>
+                    <div className="flex items-center justify-center space-x-4 max-w-md mx-auto">
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={cloudCoverage}
+                            onChange={handleCloudCoverageChange}
+                            className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
+                        />
+                        <span className="text-lg font-semibold">{cloudCoverage}%</span>
+                    </div>
+                    <style jsx>{`
+                        input[type="range"]::-webkit-slider-thumb {
+                            appearance: none;
+                            width: 16px;
+                            height: 16px;
+                            background: blue;
+                            cursor: pointer;
+                            border-radius: 50%;
+                        }
+        
+                        input[type="range"]::-moz-range-thumb {
+                            width: 16px;
+                            height: 16px;
+                            background: blue;
+                            cursor: pointer;
+                            border-radius: 50%;
+                        }
+                    `}</style>
+                </div>
+
+                {/* Historical/Live Toggle */}
+                <div className="text-center">
+                    <h3 className="text-xl font-semibold mb-4 justify-center flex items-center">
+                        <SettingsIcon className="mr-2" /> Mode
+                    </h3>
+                    <div className="flex justify-center space-x-4">
+                        <button
+                            type="button"
+                            onClick={() => handleFilterChange('historical')}
+                            className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors duration-200 ${filterOption === 'historical' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                        >
+                            <History />
+                            <span>Historical</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleFilterChange('live')}
+                            className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors duration-200 ${filterOption === 'live' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                        >
+                            <Notifications />
+                            <span>Live</span>
+                        </button>
+                    </div>
+                </div>
+
+                {/* Historical Data Options */}
+                {filterOption === 'historical' && (
                     <div className="text-center space-y-4">
-                        <h3 className="text-xl font-semibold mb-4">Satellites</h3>
-                        <div className="inline-grid grid-cols-2 gap-4">
-                            <label className="flex items-center space-x-2 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    name="landsat8"
-                                    checked={selectedSatellites.landsat8}
-                                    onChange={handleSatelliteChange}
-                                    className="form-checkbox h-5 w-5 text-blue-600"
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto">
+                            <div>
+                                <label className="block font-bold mb-2">Start Date</label>
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    dateFormat="dd/MM/yyyy"  // Día/mes/año
+                                    maxDate={maxHistoricalDate}
+                                    minDate={minHistoricalDate}
+                                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
                                 />
-                                <span>Landsat 8</span>
-                            </label>
-                            <label className="flex items-center space-x-2 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    name="landsat9"
-                                    checked={selectedSatellites.landsat9}
-                                    onChange={handleSatelliteChange}
-                                    className="form-checkbox h-5 w-5 text-blue-600"
+                            </div>
+                            <div>
+                                <label className="block font-bold mb-2">End Date</label>
+                                <DatePicker
+                                    selected={endDate}
+                                    onChange={(date) => setEndDate(date)}
+                                    dateFormat="dd/MM/yyyy"  // Día/mes/año
+                                    maxDate={new Date()}
+                                    minDate={startDate}
+                                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
                                 />
-                                <span>Landsat 9</span>
-                            </label>
+                            </div>
                         </div>
-                        {(!selectedSatellites.landsat8 && !selectedSatellites.landsat9) && (
-                            <p className="text-red-500 text-sm">Please select at least one satellite and put one pin.</p>
+                    </div>
+                )}
+
+                {/* Live Data Options */}
+                {filterOption === 'live' && (
+                    <div className="text-center space-y-4">
+                        <h3 className="text-xl font-semibold mb-4">Notification</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto">
+                            <div>
+                                <label className="block font-bold mb-2">Delay</label>
+                                <select
+                                    value={notificationDelay}
+                                    onChange={(e) => setNotificationDelay(e.target.value)}
+                                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
+                                >
+                                    <option value="15">15 minutes</option>
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="120">2 hours</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block font-bold mb-4">Type</label>
+                                <div className="flex items-center justify-center gap-5">
+                                    <label className="flex items-center space-x-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            value="browser"
+                                            checked={notificationType === 'browser'}
+                                            onChange={(e) => setNotificationType(e.target.value)}
+                                            className="form-radio h-5 w-5 text-blue-600"
+                                        />
+                                        <span className="flex items-center">
+                                        <Notifications className="mr-2" /> Browser
+                                    </span>
+                                    </label>
+                                    <label className="flex items-center space-x-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            value="email"
+                                            checked={notificationType === 'email'}
+                                            onChange={(e) => setNotificationType(e.target.value)}
+                                            className="form-radio h-5 w-5 text-blue-600"
+                                        />
+                                        <span className="flex items-center">
+                                        <Email className="mr-2" /> Email
+                                    </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        {notificationType === 'email' && (
+                            <div className="max-w-md mx-auto">
+                                <label htmlFor="email" className="block mb-2">Email Address</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="example@email.com"
+                                    className="w-full p-2 bg-gray-800 border border-gray-700 rounded text-white"
+                                    required={notificationType === 'email'}
+                                />
+                            </div>
                         )}
                     </div>
+                )}
 
-                    {/* Submit Button */}
-                    <div className="text-center">
-                        <button
-                            disabled={!isButtonEnabled || !isButtonEnabled2}
-                            type="submit"
-                            className={`font-bold py-2 px-4 rounded transition-all ${isButtonEnabled && isButtonEnabled2
-                                ? "bg-blue-600 hover:bg-blue-700 text-white"
-                                : "bg-gray-400 text-gray-200 cursor-not-allowed"
-                                }`}
-                        >
-                            Submit
-                        </button>
-
+                {/* Satellite Selection */}
+                <div className="text-center space-y-4">
+                    <h3 className="text-xl font-semibold mb-4">Satellites</h3>
+                    <div className="inline-grid grid-cols-2 gap-4">
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                name="landsat8"
+                                checked={selectedSatellites.landsat8}
+                                onChange={handleSatelliteChange}
+                                className="form-checkbox h-5 w-5 text-blue-600"
+                            />
+                            <span>Landsat 8</span>
+                        </label>
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                name="landsat9"
+                                checked={selectedSatellites.landsat9}
+                                onChange={handleSatelliteChange}
+                                className="form-checkbox h-5 w-5 text-blue-600"
+                            />
+                            <span>Landsat 9</span>
+                        </label>
                     </div>
-                </form>
-            </div >
-        </div >
+                    {(!selectedSatellites.landsat8 && !selectedSatellites.landsat9) && (
+                        <p className="text-red-500 text-sm">Please select at least one satellite and put one pin.</p>
+                    )}
+                </div>
+
+                {/* Submit Button */}
+                <div className="text-center">
+                    <button
+                        disabled={!isButtonEnabled || !isButtonEnabled2}
+                        type="submit"
+                        className={`font-bold py-2 px-4 rounded transition-all ${isButtonEnabled && isButtonEnabled2
+                            ? "bg-blue-600 hover:bg-blue-700 text-white"
+                            : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                        }`}
+                    >
+                        Submit
+                    </button>
+                    <p className="text-white text-bold text-2xl mt-4">Generated token: {generatedToken}</p>
+                </div>
+            </form>
+        </div>
     );
 }

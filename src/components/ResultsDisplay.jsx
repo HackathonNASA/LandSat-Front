@@ -171,12 +171,9 @@ export default function ResultsDisplay() {
     };
 
     return (
-        <div className="bg-black bg-opacity-50 rounded-lg py-8 px-4">
-            <div className="max-w-6xl mx-auto space-y-8">
-                <h1 className="text-4xl font-bold text-center text-white">Results</h1>
+        <div className=" max-w-6xl mx-auto space-y-8 py-2 px-4">
                 <h3 className="text-3xl font-bold text-center text-white flex items-center justify-center">
-                    <Globe className="mr-2 h-8 w-8" />
-                    NASA Landsat Explorer
+                    <Globe className="mr-2 h-8 w-8" />Requested Results
                 </h3>
 
                 <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center items-center">
@@ -246,7 +243,7 @@ export default function ResultsDisplay() {
                         <div className="flex justify-center">
                             <button
                                 onClick={handleDownloadPDF}
-                                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 flex items-center"
+                                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 flex items-center mr-4"
                             >
                                 <Download className="mr-2 h-5 w-5" />
                                 PDF
@@ -262,6 +259,5 @@ export default function ResultsDisplay() {
                     </>
                 )}
             </div>
-        </div>
     );
 }
