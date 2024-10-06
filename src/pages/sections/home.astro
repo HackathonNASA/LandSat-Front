@@ -1,7 +1,75 @@
+---
+---
+
 <section
-    id="home"
-    class="relative z-10 flex flex-col md:flex-row w-full h-[600px] pt-28"
+        id="home"
+        class="relative z-10 flex flex-col md:flex-row w-full h-[700px] pt-28"
 >
-    <!-- Added pt-24 -->
-    <!-- Landsat Info Section -->
+    <!-- Your section content here -->
+
+    <!-- Scroll Down Indicator -->
+    <div class="scroll-down-indicator">
+        <span class="arrow"></span>
+    </div>
 </section>
+
+<style global>
+    /* Styling for the scroll-down indicator */
+    .scroll-down-indicator {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        transition: opacity 0.5s ease; /* Smooth fade transition */
+    }
+
+    /* Arrow style */
+    .arrow {
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 15px solid #fff; /* Arrow color */
+        opacity: 0.8;
+        animation: bounce 2s infinite;
+    }
+
+    /* Bounce animation */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(10px);
+        }
+        60% {
+            transform: translateY(5px);
+        }
+    }
+
+    /* Optional: Add hover effect */
+    .scroll-down-indicator:hover .arrow {
+        opacity: 1;
+    }
+</style>
+
+<script>
+    // JavaScript to handle the scroll fade effect
+    document.addEventListener('scroll', () => {
+        const scrollPosition = window.scrollY;
+        const indicator = document.querySelector('.scroll-down-indicator');
+
+        // Adjust the opacity based on how far down the page is scrolled
+        const maxScrollDistance = 300; // Adjust this value to suit your layout
+        const fadeOutPoint = Math.min(scrollPosition / maxScrollDistance, 1);
+
+        indicator.style.opacity = 1 - fadeOutPoint; // Fade out as you scroll
+    });
+</script>
