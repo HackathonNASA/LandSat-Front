@@ -5,7 +5,6 @@ import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 
-// Astro configuration
 export default defineConfig({
   // Global settings
   site: 'https://yourdomain.com',

@@ -236,6 +236,13 @@ export default function ResultsDisplay() {
 
             {showResults && (
                 <>
+                    <div className="flex justify-center mb-4">
+                        <img
+                            src="../../assets/mapa.jpg" // Reemplaza esto con la URL de tu imagen
+                            alt="Descripción de la imagen" // Añade una descripción de la imagen
+                            className="w-auto h-96 object-contain rounded-lg" // Puedes ajustar el tamaño según tus necesidades
+                        />
+                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div className="lg:col-span-2 grid grid-cols-3 gap-4">
                             {results.images.map((image) => (
