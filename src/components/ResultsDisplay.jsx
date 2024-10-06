@@ -12,6 +12,7 @@ export default function ResultsDisplay() {
     const [showResults, setShowResults] = useState(false);
     const [graphData, setGraphData] = useState([]);
     const [comparisonData, setComparisonData] = useState([]);
+    const [yDomain, setYDomain] = useState([0, 1]);
 
     const dataUrl = "http://127.0.0.1:5000/api/get-historical-data";
 
@@ -46,7 +47,8 @@ export default function ResultsDisplay() {
             const data = await fetchData();
             setResults(data);
             setSelectedImage(data.images[0]);
-            setShowResults(true); // Mostrar los resultados tras la búsqueda
+            setShowResults(true);
+            processGraphData(data.images);
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -295,7 +297,7 @@ export default function ResultsDisplay() {
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
                         <div className="bg-gray-800 rounded-lg p-4">
-                            <h4 className="text-xl font-semibold text-white mb-4">Satellite Data Evolution</h4>
+                            <h4 className="text-xl text-center font-semibold text-white mb-4">Satellite Data</h4>
                             <ResponsiveContainer width="100%" height={400}>
                                 <LineChart data={graphData}>
                                     <CartesianGrid strokeDasharray="3 3" />
@@ -303,17 +305,17 @@ export default function ResultsDisplay() {
                                     <YAxis domain={yDomain} />
                                     <Tooltip />
                                     <Legend />
-                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band" strokeWidth={4} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
                         <div className="bg-gray-800 rounded-lg p-4">
-                            <h4 className="text-xl font-semibold text-white mb-4">Comparison with Ground Data (Simulated)</h4>
+                            <h4 className="text-xl text-center font-semibold text-white mb-4">Ground Data</h4>
                             <ResponsiveContainer width="100%" height={400}>
                                 <LineChart data={comparisonData}>
                                     <CartesianGrid strokeDasharray="3 3" />
@@ -321,12 +323,12 @@ export default function ResultsDisplay() {
                                     <YAxis domain={yDomain} />
                                     <Tooltip />
                                     <Legend />
-                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band (Ground)" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band (Ground)" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band (Ground)" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band (Ground)" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band (Ground)" strokeWidth={2} />
-                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band (Ground)" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band" strokeWidth={4} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
