@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Globe, Loader2, Search, Info, Download, Satellite } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
@@ -9,6 +10,8 @@ export default function ResultsDisplay() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [showResults, setShowResults] = useState(false);
+    const [graphData, setGraphData] = useState([]);
+    const [comparisonData, setComparisonData] = useState([]);
 
     const dataUrl = "http://127.0.0.1:5000/api/get-historical-data";
 
@@ -49,6 +52,42 @@ export default function ResultsDisplay() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const processGraphData = (images) => {
+        const graphData = images.map((image, index) => ({
+            name: `Image ${index + 1}`,
+            SR_B2: parseFloat(image.datos.SR_B2),
+            SR_B3: parseFloat(image.datos.SR_B3),
+            SR_B4: parseFloat(image.datos.SR_B4),
+            SR_B5: parseFloat(image.datos.SR_B5),
+            SR_B6: parseFloat(image.datos.SR_B6),
+            SR_B7: parseFloat(image.datos.SR_B7),
+        }));
+
+        setGraphData(graphData);
+
+        // Generate comparison data
+        const comparisonData = graphData.map(item => ({
+            name: item.name,
+            SR_B2: item.SR_B2 + (Math.random() - 0.5) * 0.1 * item.SR_B2,
+            SR_B3: item.SR_B3 + (Math.random() - 0.5) * 0.1 * item.SR_B3,
+            SR_B4: item.SR_B4 + (Math.random() - 0.5) * 0.1 * item.SR_B4,
+            SR_B5: item.SR_B5 + (Math.random() - 0.5) * 0.1 * item.SR_B5,
+            SR_B6: item.SR_B6 + (Math.random() - 0.5) * 0.1 * item.SR_B6,
+            SR_B7: item.SR_B7 + (Math.random() - 0.5) * 0.1 * item.SR_B7,
+        }));
+
+        setComparisonData(comparisonData);
+
+        // Calculate Y domain
+        const allValues = [...graphData, ...comparisonData].flatMap(item =>
+            Object.values(item).filter(val => typeof val === 'number')
+        );
+        const minY = Math.min(...allValues);
+        const maxY = Math.max(...allValues);
+        const padding = (maxY - minY) * 0.1; // Add 10% padding
+        setYDomain([Math.max(0, minY - padding), maxY + padding]);
     };
 
     const generatePDF = async (results) => {
@@ -253,6 +292,44 @@ export default function ResultsDisplay() {
                             <Download className="mr-2 h-5 w-5" />
                             CSV
                         </button>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                        <div className="bg-gray-800 rounded-lg p-4">
+                            <h4 className="text-xl font-semibold text-white mb-4">Satellite Data Evolution</h4>
+                            <ResponsiveContainer width="100%" height={400}>
+                                <LineChart data={graphData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis domain={yDomain} />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band" strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                        <div className="bg-gray-800 rounded-lg p-4">
+                            <h4 className="text-xl font-semibold text-white mb-4">Comparison with Ground Data (Simulated)</h4>
+                            <ResponsiveContainer width="100%" height={400}>
+                                <LineChart data={comparisonData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis domain={yDomain} />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band (Ground)" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band (Ground)" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band (Ground)" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band (Ground)" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band (Ground)" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band (Ground)" strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 </>
             )}
