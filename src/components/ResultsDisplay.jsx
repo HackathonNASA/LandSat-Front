@@ -27,8 +27,7 @@ export default function ResultsDisplay() {
             const mappedData = {
                 images: jsonData.map((item, index) => ({
                     id: index + 1,
-                    title: `Landsat Image - ${item.fecha}`,
-                    description: `Landsat data collected on ${item.fecha}`,
+                    title: `${item.fecha}`,
                     url: item.url,
                     datos: item.datos
                 }))
@@ -253,7 +252,7 @@ export default function ResultsDisplay() {
                                     <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                         <Satellite className="text-white w-12 h-12" />
                                     </div>
-                                    <p className="absolute bottom-0 left-0 right-0 text-white text-sm p-2 truncate bg-black bg-opacity-50">{image.title}</p>
+                                    <p className="absolute bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-sm p-2 truncate bg-black bg-opacity-30">{image.title}</p>
                                 </div>
                             ))}
                         </div>
@@ -295,22 +294,22 @@ export default function ResultsDisplay() {
                             CSV
                         </button>
                     </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 mt-8">
                         <div className="bg-gray-800 rounded-lg p-4">
                             <h4 className="text-xl text-center font-semibold text-white mb-4">Satellite Data</h4>
                             <ResponsiveContainer width="100%" height={400}>
                                 <LineChart data={graphData}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis domain={yDomain} />
+                                    <XAxis dataKey="name" stroke="#ffffff" />
+                                    <YAxis domain={yDomain} stroke="#ffffff" />
                                     <Tooltip />
                                     <Legend />
-                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band" strokeWidth={3} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
@@ -319,16 +318,16 @@ export default function ResultsDisplay() {
                             <ResponsiveContainer width="100%" height={400}>
                                 <LineChart data={comparisonData}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis domain={yDomain} />
+                                    <XAxis dataKey="name" stroke="#ffffff" />
+                                    <YAxis domain={yDomain} stroke="#ffffff" />
                                     <Tooltip />
                                     <Legend />
-                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band" strokeWidth={4} />
-                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band" strokeWidth={4} />
+                                    <Line type="monotone" dataKey="SR_B2" stroke="#8884d8" name="Blue band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B3" stroke="#82ca9d" name="Green band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B4" stroke="#ff7300" name="Red band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B5" stroke="#ff6b6b" name="Near infrared band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B6" stroke="#54a0ff" name="Thermal infrared band" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SR_B7" stroke="#5f27cd" name="Mineral infrared band" strokeWidth={3} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
